@@ -1,6 +1,10 @@
 package ctype
 
-import "time"
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"time"
+)
 
 type Msg struct {
 	Type         int8          `json:"type"`    //消息类型: 0-文本; 1-图片; 2-文件; 3-音频; 4-视频; 6-语音通话; 7-视频通话; 8-撤回消息; 9-引用消息; 10-@
@@ -14,6 +18,14 @@ type Msg struct {
 	WithdrawMsg  *WithdrawMsg  `json:"withdrawMsg"`
 	QuoteMsg     *QuoteMsg     `json:"quoteMsg"`
 	AtMsg        *AtMsg        `json:"atMsg"`
+}
+
+func (c *Msg) Scan(val interface{}) error {
+	return json.Unmarshal(val.([]byte), c)
+}
+func (c Msg) Value() (driver.Value, error) {
+	b, err := json.Marshal(c)
+	return string(b), err
 }
 
 type ImageMsg struct {

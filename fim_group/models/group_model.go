@@ -8,11 +8,11 @@ import (
 
 type GroupModel struct {
 	gorm.Model
-	Title string `json:"title"`
+	Title string `gorm:"size:64" json:"title"`
 	// TotalAmount int `json:"totalAmount"`
 	// OnlineAmount int `json:"onlineAmount"`
-	Abstract       string                `json:"abstract"`
-	Avatar         string                `json:"avatar"`
+	Abstract       string                `gorm:"size:128" json:"abstract"`
+	Avatar         string                `gorm:"size:256" json:"avatar"`
 	CreatorID      uint                  `json:"creatorID"`
 	IsSearchable   bool                  `json:"isSearchable"`
 	Verification   int8                  `json:"verification"` //验证方式: 0-no; 1-need verifyMSG; 2-need answer; 3-need answer correct; 4-allow everyone
