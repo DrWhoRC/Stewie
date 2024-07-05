@@ -1,0 +1,56 @@
+type LoginRequest {
+	UserName string `json:"userName"`
+	Password string `json:"password"`
+}
+
+type LoginInfo {
+	Token string `json:"token"`
+}
+
+type LoginResponse {
+	Code int       `json:"code"`
+	Data LoginInfo `json:"data"`
+	Msg  string    `json:"msg"`
+}
+
+type Response {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+type AuthenticationResponse {
+	Code int    `json:"code"`
+	Data string `json:"data"`
+	Msg  string `json:"msg"`
+}
+
+type ThirdPartyLoginInfo {
+	Name string `json:"name"`
+	Icon string `json:"icon"`
+	Url  string `json:"url"` //跳转地址
+}
+
+type ThirdPartyLoginInfoResponse {
+	Code int                   `json:"code"`
+	Data []ThirdPartyLoginInfo `json:"data"`
+	Msg  string                `json:"msg"`
+}
+
+service auth {
+	@handler login
+	post /api/auth/login (LoginRequest) returns (LoginResponse)
+
+	@handler authentication
+	post /api/auth/authentication returns (AuthenticationResponse) // 请求头里边拿参数，不需要入参
+
+	@handler logout
+	post /api/auth/logout returns (Response)
+
+	@handler third_party_login_info
+	get /api/auth/third_party_login_info returns (ThirdPartyLoginInfoResponse)
+
+	@handler third_party_login
+	post /api/auth/third_party_login (LoginRequest) returns (LoginResponse)
+}
+
+//goctl api go -api auth_api.api -dir .
