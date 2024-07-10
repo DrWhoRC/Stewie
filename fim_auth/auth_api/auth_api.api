@@ -24,6 +24,12 @@ type AuthenticationResponse {
 	Msg  string `json:"msg"`
 }
 
+type ThirdPartyLoginRequest {
+	ThirdParty string `json:"thirdParty"`
+	Code       string `json:"code"`
+	Flag       string `json:"flag"`
+}
+
 type ThirdPartyLoginInfo {
 	Name string `json:"name"`
 	Icon string `json:"icon"`
@@ -50,7 +56,7 @@ service auth {
 	get /api/auth/third_party_login_info returns (ThirdPartyLoginInfoResponse)
 
 	@handler third_party_login
-	post /api/auth/third_party_login (LoginRequest) returns (LoginResponse)
+	post /api/auth/third_party_login (ThirdPartyLoginRequest) returns (LoginResponse)
 }
 
 //goctl api go -api auth_api.api -dir .

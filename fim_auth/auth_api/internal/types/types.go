@@ -38,3 +38,9 @@ type ThirdPartyLoginInfoResponse struct {
 	Data []ThirdPartyLoginInfo `json:"data"`
 	Msg  string                `json:"msg"`
 }
+
+type ThirdPartyLoginRequest struct {
+	ThirdParty string `json:"thirdParty"`
+	Code       string `json:"code"`
+	Flag       string `json:"flag"`
+}

@@ -16,4 +16,14 @@ type Config struct {
 		Pwd  string
 		DB   int
 	}
+	ThirdPartyLoginList []struct {
+		Name string
+		Icon string
+		Url  string
+	}
+	QQ struct {
+		AppID    string
+		AppKey   string
+		Redirect string
+	}
 }

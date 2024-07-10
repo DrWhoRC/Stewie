@@ -26,5 +26,18 @@ func NewThird_party_login_infoLogic(ctx context.Context, svcCtx *svc.ServiceCont
 func (l *Third_party_login_infoLogic) Third_party_login_info() (resp *types.ThirdPartyLoginInfoResponse, err error) {
 	// todo: add your logic here and delete this line
 
-	return
+	resp = &types.ThirdPartyLoginInfoResponse{
+		Data: []types.ThirdPartyLoginInfo{}, // 初始化Data切片
+	}
+	for _, v := range l.svcCtx.Config.ThirdPartyLoginList {
+		resp.Data = append(resp.Data, types.ThirdPartyLoginInfo{
+			Name: v.Name,
+			Icon: v.Icon,
+			Url:  v.Url,
+		})
+	}
+
+	resp.Code = 1
+	resp.Msg = "Third Party Info "
+	return resp, nil
 }

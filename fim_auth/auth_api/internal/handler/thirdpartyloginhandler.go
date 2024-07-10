@@ -6,12 +6,13 @@ import (
 	"fim/fim_auth/auth_api/internal/logic"
 	"fim/fim_auth/auth_api/internal/svc"
 	"fim/fim_auth/auth_api/internal/types"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func third_party_loginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.LoginRequest
+		var req types.ThirdPartyLoginRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
