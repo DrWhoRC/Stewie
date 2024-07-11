@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
@@ -39,9 +38,9 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 	url := fmt.Sprintf("%s/%s", addr, req.URL.String())
 
 	//先将请求体读取到body中，此时req.Body已经被读取过一次，所以要重新设置
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	//随后使用NopCloser方法再次设置req.Body，req.body来设置proxybody，body来获取contentlength
-	req.Body = ioutil.NopCloser(bytes.NewReader(body))
+	req.Body = io.NopCloser(bytes.NewReader(body))
 
 	proxyReq, _ := http.NewRequest(req.Method, url, req.Body)
 	fmt.Println(req.Header, "\n", proxyReq.Body)
