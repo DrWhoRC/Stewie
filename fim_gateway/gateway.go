@@ -38,7 +38,7 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	url := fmt.Sprintf("http://%s/%s", addr, req.URL.String())
+	url := fmt.Sprintf("%s%s/%s", req.URL.Scheme, addr, req.URL.String())
 
 	//先将请求体读取到body中，此时req.Body已经被读取过一次，所以要重新设置
 	body, err := io.ReadAll(req.Body)
