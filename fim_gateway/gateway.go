@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fim/common/etcd"
 	"flag"
 	"fmt"
 	"io"
@@ -12,10 +13,12 @@ import (
 	"github.com/zeromicro/go-zero/core/conf"
 )
 
-var serviceMap = map[string]string{
-	"auth": "http://localhost:8888",
-	"user": "http://localhost:8080",
+type Config struct {
+	Addr string
+	Etcd string
 }
+
+var config Config
 
 func gateway(res http.ResponseWriter, req *http.Request) {
 
@@ -28,22 +31,27 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 	}
 
 	service := addrlist[1]
-	addr, ok := serviceMap[service]
-	if !ok {
+	addr := etcd.GetServiceAddr(config.Etcd, service+"_api")
+	if addr == "" {
 		fmt.Println("service not found", service)
 		res.Write([]byte("err"))
 		return
 	}
 
-	url := fmt.Sprintf("%s/%s", addr, req.URL.String())
+	url := fmt.Sprintf("http://%s/%s", addr, req.URL.String())
 
 	//先将请求体读取到body中，此时req.Body已经被读取过一次，所以要重新设置
 	body, err := io.ReadAll(req.Body)
 	//随后使用NopCloser方法再次设置req.Body，req.body来设置proxybody，body来获取contentlength
 	req.Body = io.NopCloser(bytes.NewReader(body))
 
-	proxyReq, _ := http.NewRequest(req.Method, url, req.Body)
-	fmt.Println(req.Header, "\n", proxyReq.Body)
+	proxyReq, err := http.NewRequest(req.Method, url, req.Body)
+	if err != nil {
+		fmt.Println(err)
+		res.Write([]byte("服务异常"))
+		return
+	}
+	//fmt.Println(req.Header, "\n", proxyReq.Body)
 
 	proxyReq.ContentLength = int64(len(body))
 	//罪魁祸首！！！！！！！！！！！！！
@@ -74,18 +82,14 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 
 var configFile = flag.String("f", "settings.yaml", "The Config File")
 
-type Config struct {
-	Addr string
-}
-
 func main() {
 
 	flag.Parse()
-	var c Config
-	conf.MustLoad(*configFile, &c)
+
+	conf.MustLoad(*configFile, &config)
 
 	http.HandleFunc("/", gateway)
-	fmt.Printf("gateway running %s \n", c.Addr)
+	fmt.Printf("gateway running %s \n", config.Addr)
 
-	http.ListenAndServe(c.Addr, nil)
+	http.ListenAndServe(config.Addr, nil)
 }

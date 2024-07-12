@@ -41,3 +41,17 @@ func DeliverAddr(etcdAddr string, serviceName string, addr string) {
 	logx.Infof("地址上送成功:%s,%s", serviceName, addr)
 	fmt.Printf("地址上送成功:%s,%s", serviceName, addr)
 }
+
+func GetServiceAddr(EtcdAddr string, ServiceName string) string {
+	client, err := core.InitEtcd(EtcdAddr)
+	if err != nil {
+		logx.Error("etcd init error", err)
+		return "etcd init error"
+	}
+	addr, err := client.Get(context.Background(), ServiceName)
+	if err == nil && len(addr.Kvs) > 0 {
+		return string(addr.Kvs[0].Value)
+	}
+	return "get addr error"
+
+}
