@@ -22,6 +22,7 @@ ThirdPartyLoginList:
  - Name: QQ
    Icon: https://cn.bing.com/images/search?view=detailV2&ccid=KX%2f05K6j&id=40567773FFF15A4238A9771FFF5992F2D124A2EC&thid=OIP.KX_05K6jrKo-yU66jG3mNwHaFo&mediaurl=https%3a%2f%2fts1.cn.mm.bing.net%2fth%2fid%2fR-C.297ff4e4aea3acaa3ec94eba8c6de637%3frik%3d7KIk0fKSWf8fdw%26riu%3dhttp%253a%252f%252fimg.sj33.cn%252fuploads%252fallimg%252f201402%252f7-140223103130591.png%26ehk%3dPV2HhrkJyS8KR1heubLL5N7G8ofMVTYg%252bZgzEIElegg%253d%26risl%3d%26pid%3dImgRaw%26r%3d0&exph=571&expw=750&q=%e5%be%ae%e4%bf%a1%e5%9b%be%e6%af%94%e7%88%b1&simid=608020400438707025&FORM=IRPRST&ck=58F5E529371158089FD55A97CC13163A&selectedIndex=0&itb=0
    Url: 
+Etcd: 127.0.0.1:2379
 UserRpc:
   Etcd:
     Hosts:
