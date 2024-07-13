@@ -6,7 +6,6 @@ import (
 	"fim/utils/ips"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,10 +29,7 @@ func DeliverAddr(etcdAddr string, serviceName string, addr string) {
 
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	_, err = client.Put(ctx, serviceName, addr)
+	_, err = client.Put(context.Background(), serviceName, addr)
 
 	if err != nil {
 		logx.Error("地址上送失败", err)

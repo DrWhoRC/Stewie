@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fim/common/etcd"
 	"flag"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type Config struct {
@@ -38,7 +40,48 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	url := fmt.Sprintf("%s%s/%s", req.URL.Scheme, addr, req.URL.String())
+	remoteAddr := strings.Split(req.RemoteAddr, ":")
+
+	//请求认证服务的地址
+	authAddr := etcd.GetServiceAddr((config.Etcd), "auth_api")
+	authUrl := fmt.Sprintf("http://%s/api/auth/authentication", authAddr)
+	fmt.Println("authUrl:", authUrl)
+	body01, err := io.ReadAll(req.Body)
+	req.Body = io.NopCloser(bytes.NewReader(body01))
+
+	authReq, _ := http.NewRequest("POST", authUrl, req.Body)
+	req.Body = io.NopCloser(bytes.NewReader(body01))
+	authReq.Header.Set("Content-Type", "application/json")
+	authReq.ContentLength = int64(len(body01))
+	authReq.Header.Set("X-Forwarded-For", remoteAddr[0])
+	authRes, err := http.DefaultClient.Do(authReq)
+	if err != nil {
+		fmt.Println(err)
+		res.Write([]byte("服务异常"))
+		return
+	}
+	type Response struct {
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+	}
+	var authResponse Response
+	byteData, _ := io.ReadAll(authRes.Body)
+	authErr := json.Unmarshal(byteData, &authResponse)
+	if authErr != nil {
+		fmt.Println(authResponse, ":", authErr.Error())
+	}
+
+	if err != nil {
+		logx.Error(authErr)
+		res.Write([]byte("认证服务异常1"))
+		return
+	}
+	//authentication failed
+	if authResponse.Code != 0 {
+		res.Write([]byte("请重新登录"))
+	}
+
+	url := fmt.Sprintf("http://%s/%s", addr, req.URL.String())
 
 	//先将请求体读取到body中，此时req.Body已经被读取过一次，所以要重新设置
 	body, err := io.ReadAll(req.Body)
@@ -48,10 +91,9 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 	proxyReq, err := http.NewRequest(req.Method, url, req.Body)
 	if err != nil {
 		fmt.Println(err)
-		res.Write([]byte("服务异常"))
+		res.Write([]byte("认证服务异常2"))
 		return
 	}
-	//fmt.Println(req.Header, "\n", proxyReq.Body)
 
 	proxyReq.ContentLength = int64(len(body))
 	//罪魁祸首！！！！！！！！！！！！！
@@ -68,7 +110,6 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	remoteAddr := strings.Split(req.RemoteAddr, ":")
 	proxyReq.Header.Set("X-Forwarded-For", remoteAddr[0])
 	response, err := http.DefaultClient.Do(proxyReq)
 

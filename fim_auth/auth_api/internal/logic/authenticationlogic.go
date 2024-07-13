@@ -30,7 +30,11 @@ func (l *AuthenticationLogic) Authentication(token string) (resp *types.Authenti
 	// todo: add your logic here and delete this line
 	if token == "" {
 		err = errors.New("token is empty")
-		return
+		return &types.AuthenticationResponse{
+			Code: 1,
+			Data: "token is empty",
+			Msg:  "token is empty",
+		}, nil
 	}
 
 	payload, err := jwts.ParseToken(token, l.svcCtx.Config.Auth.AccessSecret)
@@ -45,7 +49,8 @@ func (l *AuthenticationLogic) Authentication(token string) (resp *types.Authenti
 		return
 	}
 	resp = &types.AuthenticationResponse{
-		Msg: "Authentication successfully",
+		Code: 0,
+		Msg:  "Authentication successfully",
 	}
 
 	return resp, nil
