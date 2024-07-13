@@ -22,6 +22,11 @@ type Config struct {
 
 var config Config
 
+//用户直接用login登录的话，会返回jwt，但网关目前的设计是所有服务都先通过auth再进行转发，
+//所以需要想一种模式，满足的逻辑为：访问login的时候，不需要auth，直接返回jwt，再走auth
+//如果没有login，本来就在login的话，就不需要login，还是auth->service，
+//如果没有login，最好是auth->login->auth->service
+
 func gateway(res http.ResponseWriter, req *http.Request) {
 
 	//匹配请求前缀 /api/user/xxx
@@ -77,7 +82,7 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	//authentication failed
-	if authResponse.Code != 0 {
+	if authResponse.Code == 1 {
 		res.Write([]byte("请重新登录"))
 	}
 
