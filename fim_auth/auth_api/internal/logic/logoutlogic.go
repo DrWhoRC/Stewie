@@ -49,7 +49,7 @@ func (l *LogoutLogic) Logout(token string) (resp *types.Response, err error) {
 	l.svcCtx.Redis.SetNX(userid_str, "", expiration)
 
 	return &types.Response{
-		Code: 1,
+		Code: 0,
 		Msg:  "Logout successfully",
 	}, nil
 

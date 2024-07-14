@@ -44,46 +44,57 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("err"))
 		return
 	}
+	fmt.Println("addr:", addr)
 
 	remoteAddr := strings.Split(req.RemoteAddr, ":")
 
-	//请求认证服务的地址
-	authAddr := etcd.GetServiceAddr((config.Etcd), "auth_api")
-	authUrl := fmt.Sprintf("http://%s/api/auth/authentication", authAddr)
-	fmt.Println("authUrl:", authUrl)
-	body01, err := io.ReadAll(req.Body)
-	req.Body = io.NopCloser(bytes.NewReader(body01))
+	if req.URL.String() != "/api/auth/login" {
 
-	authReq, _ := http.NewRequest("POST", authUrl, req.Body)
-	req.Body = io.NopCloser(bytes.NewReader(body01))
-	authReq.Header.Set("Content-Type", "application/json")
-	authReq.ContentLength = int64(len(body01))
-	authReq.Header.Set("X-Forwarded-For", remoteAddr[0])
-	authRes, err := http.DefaultClient.Do(authReq)
-	if err != nil {
-		fmt.Println(err)
-		res.Write([]byte("服务异常"))
-		return
-	}
-	type Response struct {
-		Code int    `json:"code"`
-		Msg  string `json:"msg"`
-	}
-	var authResponse Response
-	byteData, _ := io.ReadAll(authRes.Body)
-	authErr := json.Unmarshal(byteData, &authResponse)
-	if authErr != nil {
-		fmt.Println(authResponse, ":", authErr.Error())
-	}
+		//请求认证服务的地址
+		authAddr := etcd.GetServiceAddr((config.Etcd), "auth_api")
+		authUrl := fmt.Sprintf("http://%s/api/auth/authentication", authAddr)
+		fmt.Println("authUrl:", authUrl)
+		body01, err := io.ReadAll(req.Body)
+		req.Body = io.NopCloser(bytes.NewReader(body01))
 
-	if err != nil {
-		logx.Error(authErr)
-		res.Write([]byte("认证服务异常1"))
-		return
-	}
-	//authentication failed
-	if authResponse.Code == 1 {
-		res.Write([]byte("请重新登录"))
+		authReq, _ := http.NewRequest("POST", authUrl, req.Body)
+		req.Body = io.NopCloser(bytes.NewReader(body01))
+		authReq.Header.Set("Content-Type", "application/json")
+		authReq.ContentLength = int64(len(body01))
+		authReq.Header.Set("X-Forwarded-For", remoteAddr[0])
+		for name, values := range req.Header {
+			for _, value := range values {
+				authReq.Header.Add(name, value)
+			}
+		}
+
+		authRes, err := http.DefaultClient.Do(authReq)
+		if err != nil {
+			fmt.Println("authres:", err)
+			res.Write([]byte("服务异常"))
+			return
+		}
+		type Response struct {
+			Code int    `json:"code"`
+			Msg  string `json:"msg"`
+		}
+		var authResponse Response
+		byteData, _ := io.ReadAll(authRes.Body)
+		fmt.Println(string(byteData))
+		authErr := json.Unmarshal(byteData, &authResponse)
+		if authErr != nil {
+			fmt.Println(&authResponse, ":", authErr.Error())
+		}
+
+		if err != nil {
+			logx.Error(authErr)
+			res.Write([]byte("认证服务异常1"))
+			return
+		}
+		//authentication failed
+		if authResponse.Code == 1 {
+			res.Write([]byte("请重新登录"))
+		}
 	}
 
 	url := fmt.Sprintf("http://%s/%s", addr, req.URL.String())
