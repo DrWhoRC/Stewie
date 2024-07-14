@@ -1,2 +1,5 @@
 addr: 127.0.0.1:8888
 Etcd: 127.0.0.1:2379
+WhiteList:
+  - "/api/auth/login"
+  - "/api/auth/third_party_login"
