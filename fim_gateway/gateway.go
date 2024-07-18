@@ -19,6 +19,7 @@ type Config struct {
 	Addr      string
 	Etcd      string
 	WhiteList []string
+	Log       logx.LogConf
 }
 
 var config Config
@@ -48,6 +49,8 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("addr:", addr)
 
 	remoteAddr := strings.Split(req.RemoteAddr, ":")
+
+	logx.Infof("%s, %s", remoteAddr[0], fmt.Sprintf("http://%s/%s", addr, req.URL.String()))
 
 	var counter int = 0
 	fmt.Println("config.whitelist:", config.WhiteList)
@@ -155,6 +158,7 @@ func main() {
 	flag.Parse()
 
 	conf.MustLoad(*configFile, &config)
+	logx.SetUp(config.Log)
 
 	http.HandleFunc("/", gateway)
 	fmt.Printf("gateway running %s \n", config.Addr)

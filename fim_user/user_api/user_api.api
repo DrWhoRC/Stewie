@@ -1,0 +1,20 @@
+syntax = "v1"
+
+type UserInfoRequest {
+	UserId uint `header:"UserId"`
+}
+
+type UserInfoResponse {
+	Id       uint   `json:"id"`
+	Nickname string `json:"nickname"`
+	Role     int8   `json:"role"`
+	Abstract string `json:"abstract"`
+	Avatar   string `json:"avatar"`
+}
+
+service users {
+	@handler GetUserInfo
+	post /api/user/user_info (UserInfoRequest) returns (UserInfoResponse)
+}
+
+//goctl api go -api user_api.api -dir .

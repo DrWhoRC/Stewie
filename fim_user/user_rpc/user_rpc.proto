@@ -13,8 +13,17 @@ message UserCreateResponse{
     int32 user_id = 1;
 }
 
+message UserInfoRequest{
+    uint32 user_id = 1;
+}
+
+message UserInfoResponse{
+    bytes data = 1; //user and userconfig json
+}
+
 service Users{
     rpc CreateUser(UserCreateRequest) returns (UserCreateResponse);
+    rpc UserInfo(UserInfoRequest) returns (UserInfoResponse);
 }
 
 //goctl rpc protoc user_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

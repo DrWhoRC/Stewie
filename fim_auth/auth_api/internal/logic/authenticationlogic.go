@@ -38,18 +38,20 @@ func (l *AuthenticationLogic) Authentication(token string) (resp *types.Authenti
 	}
 
 	payload, err := jwts.ParseToken(token, l.svcCtx.Config.Auth.AccessSecret)
+
 	if err != nil {
 		err = errors.New("token is invalid")
 		return
 	}
 
-	_, err = l.svcCtx.Redis.Get(fmt.Sprintf("logout_%d", payload.UserID)).Result()
+	_, err = l.svcCtx.Redis.Get(fmt.Sprintf("logout_%d_%s", payload.UserID, token)).Result()
 	if err == nil {
 		err = errors.New("authentication failed")
 		return
 	}
 	resp = &types.AuthenticationResponse{
 		Code: 0,
+		Data: fmt.Sprintf("payload: %v", payload),
 		Msg:  "Authentication successfully",
 	}
 

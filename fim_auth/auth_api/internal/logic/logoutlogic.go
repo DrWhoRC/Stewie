@@ -43,7 +43,7 @@ func (l *LogoutLogic) Logout(token string) (resp *types.Response, err error) {
 	expiration := claim.ExpiresAt.Time.Sub(time.Now())
 	//expire date is the same as JWToken
 
-	userid_str := fmt.Sprintf("logout_%d", claim.UserID)
+	userid_str := fmt.Sprintf("logout_%d_%s", claim.UserID, token)
 
 	//set if not exist, 设置键值对，值为空，到了过期时间就会自动删除
 	l.svcCtx.Redis.SetNX(userid_str, "", expiration)
