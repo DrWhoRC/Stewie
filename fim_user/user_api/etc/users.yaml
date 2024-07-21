@@ -1,4 +1,4 @@
-Name: users
+Name: user
 Host: 0.0.0.0
 Port: 8889
 Mysql:

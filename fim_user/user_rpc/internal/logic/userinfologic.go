@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	usermodel "fim/fim_user/models"
 
 	"fim/fim_user/user_rpc/internal/svc"
@@ -28,12 +29,21 @@ func (l *UserInfoLogic) UserInfo(in *user_grpc.UserInfoRequest) (*user_grpc.User
 	// todo: add your logic here and delete this line
 
 	var user usermodel.UserModel
-	err := l.svcCtx.DB.Where("id = ?", in.UserId).First(&user)
+
+	//预加载操作只是填充了UserModel中定义的关联字段，而不会改变变量的类型。
+	//所以，即使进行了预加载操作，user变量仍然保持为UserModel类型，
+	//只是其中的关联字段userConfModel被填充了相应的数据。
+	err := l.svcCtx.DB.Preload("UserConfigModel").Where("ID = ?", uint(in.UserId)).First(&user).Error
+
 	if err != nil {
 		return &user_grpc.UserInfoResponse{
 			Data: []byte("user ID not found"),
-		}, err.Error
+		}, err
 	}
 
-	return &user_grpc.UserInfoResponse{}, nil
+	bytedata, _ := json.Marshal(user)
+
+	return &user_grpc.UserInfoResponse{
+		Data: bytedata,
+	}, nil
 }

@@ -40,6 +40,7 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 	}
 
 	service := addrlist[1]
+	fmt.Println(service)
 	addr := etcd.GetServiceAddr(config.Etcd, service+"_api")
 	if addr == "" {
 		fmt.Println("service not found", service)
