@@ -20,10 +20,19 @@ message UserInfoRequest{
 message UserInfoResponse{
     bytes data = 1; //user and userconfig json
 }
+message UserInfoUpdateRequest{
+    uint32 user_id = 1;
+    string nickname = 2;
+    int32 role = 3;
+    string abstract = 4;
+    string avatar = 5;
+}
+
 
 service Users{
     rpc CreateUser(UserCreateRequest) returns (UserCreateResponse);
     rpc UserInfo(UserInfoRequest) returns (UserInfoResponse);
+    rpc UserInfoUpdate(UserInfoUpdateRequest) returns (UserInfoResponse);
 }
 
 //goctl rpc protoc user_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.
