@@ -29,13 +29,6 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(in *user_grpc.UserInfoUpdateRequest
 	// todo: add your logic here and delete this line
 	var user usermodel.UserModel
 
-	if l.svcCtx.DB == nil {
-		fmt.Println("db is nil")
-	}
-	if l.svcCtx == nil {
-		fmt.Println("svcCtx is nil")
-	}
-
 	err := l.svcCtx.DB.Where("ID = ?", in.UserId).First(&user).Error
 	if err != nil {
 		return &user_grpc.UserInfoResponse{
@@ -68,8 +61,19 @@ func UpdateString(val1 string, val2 *string) {
 		*val2 = val1
 	}
 }
+func UpdateStringadvanced(val1 string, val2 **string) {
+	if val1 != "" {
+		if *val2 == nil {
+			*val2 = new(string)
+		}
+		**val2 = val1
+	}
+}
 func UpdateInt(val1 int8, val2 *int8) {
 	if val1 != 0 {
 		*val2 = val1
 	}
+}
+func UpdateBool(val1 bool, val2 *bool) {
+	*val2 = val1
 }

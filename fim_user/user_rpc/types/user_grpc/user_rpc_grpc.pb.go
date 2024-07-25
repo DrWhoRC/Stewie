@@ -22,6 +22,7 @@ const (
 	Users_CreateUser_FullMethodName     = "/user_grpc.Users/CreateUser"
 	Users_UserInfo_FullMethodName       = "/user_grpc.Users/UserInfo"
 	Users_UserInfoUpdate_FullMethodName = "/user_grpc.Users/UserInfoUpdate"
+	Users_UserConfUpdate_FullMethodName = "/user_grpc.Users/UserConfUpdate"
 )
 
 // UsersClient is the client API for Users service.
@@ -31,6 +32,7 @@ type UsersClient interface {
 	CreateUser(ctx context.Context, in *UserCreateRequest, opts ...grpc.CallOption) (*UserCreateResponse, error)
 	UserInfo(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 	UserInfoUpdate(ctx context.Context, in *UserInfoUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
+	UserConfUpdate(ctx context.Context, in *UserConfUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 }
 
 type usersClient struct {
@@ -71,6 +73,16 @@ func (c *usersClient) UserInfoUpdate(ctx context.Context, in *UserInfoUpdateRequ
 	return out, nil
 }
 
+func (c *usersClient) UserConfUpdate(ctx context.Context, in *UserConfUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserInfoResponse)
+	err := c.cc.Invoke(ctx, Users_UserConfUpdate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility
@@ -78,6 +90,7 @@ type UsersServer interface {
 	CreateUser(context.Context, *UserCreateRequest) (*UserCreateResponse, error)
 	UserInfo(context.Context, *UserInfoRequest) (*UserInfoResponse, error)
 	UserInfoUpdate(context.Context, *UserInfoUpdateRequest) (*UserInfoResponse, error)
+	UserConfUpdate(context.Context, *UserConfUpdateRequest) (*UserInfoResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -93,6 +106,9 @@ func (UnimplementedUsersServer) UserInfo(context.Context, *UserInfoRequest) (*Us
 }
 func (UnimplementedUsersServer) UserInfoUpdate(context.Context, *UserInfoUpdateRequest) (*UserInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserInfoUpdate not implemented")
+}
+func (UnimplementedUsersServer) UserConfUpdate(context.Context, *UserConfUpdateRequest) (*UserInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserConfUpdate not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}
 
@@ -161,6 +177,24 @@ func _Users_UserInfoUpdate_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_UserConfUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserConfUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).UserConfUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_UserConfUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).UserConfUpdate(ctx, req.(*UserConfUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Users_ServiceDesc is the grpc.ServiceDesc for Users service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -179,6 +213,10 @@ var Users_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserInfoUpdate",
 			Handler:    _Users_UserInfoUpdate_Handler,
+		},
+		{
+			MethodName: "UserConfUpdate",
+			Handler:    _Users_UserConfUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -27,12 +27,33 @@ message UserInfoUpdateRequest{
     string abstract = 4;
     string avatar = 5;
 }
+message UserConfUpdateRequest{
+    uint32 userid = 1;
+    bool online = 2;
+    string recallmsg = 3;
+    bool friendOnlineNotify = 4;
+    bool mute = 5;
+    bool secureLink = 6;
+    bool savePwd = 7;
+    int32 searchUser = 8;
+    int32 verification = 9;
+    VerifyQuestion verifyQuestion = 10;
+}
+message VerifyQuestion{
+    string q1 = 1;
+    string a1 = 2;
+    string q2 = 3;
+    string a2 = 4;
+    string q3 = 5;
+    string a3 = 6;
+}
 
 
 service Users{
     rpc CreateUser(UserCreateRequest) returns (UserCreateResponse);
     rpc UserInfo(UserInfoRequest) returns (UserInfoResponse);
     rpc UserInfoUpdate(UserInfoUpdateRequest) returns (UserInfoResponse);
+    rpc UserConfUpdate(UserConfUpdateRequest)returns (UserInfoResponse);
 }
 
 //goctl rpc protoc user_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

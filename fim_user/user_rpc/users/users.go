@@ -13,16 +13,19 @@ import (
 )
 
 type (
+	UserConfUpdateRequest = user_grpc.UserConfUpdateRequest
 	UserCreateRequest     = user_grpc.UserCreateRequest
 	UserCreateResponse    = user_grpc.UserCreateResponse
 	UserInfoRequest       = user_grpc.UserInfoRequest
 	UserInfoResponse      = user_grpc.UserInfoResponse
 	UserInfoUpdateRequest = user_grpc.UserInfoUpdateRequest
+	VerifyQuestion        = user_grpc.VerifyQuestion
 
 	Users interface {
 		CreateUser(ctx context.Context, in *UserCreateRequest, opts ...grpc.CallOption) (*UserCreateResponse, error)
 		UserInfo(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 		UserInfoUpdate(ctx context.Context, in *UserInfoUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
+		UserConfUpdate(ctx context.Context, in *UserConfUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 	}
 
 	defaultUsers struct {
@@ -49,4 +52,9 @@ func (m *defaultUsers) UserInfo(ctx context.Context, in *UserInfoRequest, opts .
 func (m *defaultUsers) UserInfoUpdate(ctx context.Context, in *UserInfoUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error) {
 	client := user_grpc.NewUsersClient(m.cli.Conn())
 	return client.UserInfoUpdate(ctx, in, opts...)
+}
+
+func (m *defaultUsers) UserConfUpdate(ctx context.Context, in *UserConfUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error) {
+	client := user_grpc.NewUsersClient(m.cli.Conn())
+	return client.UserConfUpdate(ctx, in, opts...)
 }

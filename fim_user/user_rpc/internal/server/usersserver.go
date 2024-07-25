@@ -36,3 +36,8 @@ func (s *UsersServer) UserInfoUpdate(ctx context.Context, in *user_grpc.UserInfo
 	l := logic.NewUserInfoUpdateLogic(ctx, s.svcCtx)
 	return l.UserInfoUpdate(in)
 }
+
+func (s *UsersServer) UserConfUpdate(ctx context.Context, in *user_grpc.UserConfUpdateRequest) (*user_grpc.UserInfoResponse, error) {
+	l := logic.NewUserConfUpdateLogic(ctx, s.svcCtx)
+	return l.UserConfUpdate(in)
+}

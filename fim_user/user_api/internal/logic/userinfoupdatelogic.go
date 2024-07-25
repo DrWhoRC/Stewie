@@ -57,3 +57,10 @@ func derefInt(i *int8, defaultVal int8) int8 {
 	}
 	return defaultVal
 }
+
+func derefBool(b *bool, defaultVal bool) bool {
+	if b != nil {
+		return *b
+	}
+	return defaultVal
+}

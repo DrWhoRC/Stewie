@@ -23,6 +23,7 @@ type VerifyQuestion {
 
 type UserConfUpdateRequest {
 	UserId             uint            `header:"UserId"`
+	Online             *bool           `json:"online,optional" user_conf:"online"` //是否在线
 	RecallMsg          *string         `gorm:"size:32" json:"recallMsg,optional" user_conf:"recallMsg"` //撤回消息的提示内容
 	FriendOnlineNotify *bool           `json:"friendOnlineNotify,optional" user_conf:"friendOnlineNotify"` //好友上线通知
 	Mute               *bool           `json:"mute,optional" user_conf:"mute"` //是否静音
