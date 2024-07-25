@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-	"reflect"
 
 	usermodel "fim/fim_user/models"
 	"fim/fim_user/user_rpc/internal/svc"
@@ -29,59 +28,48 @@ func NewUserInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Us
 func (l *UserInfoUpdateLogic) UserInfoUpdate(in *user_grpc.UserInfoUpdateRequest) (*user_grpc.UserInfoResponse, error) {
 	// todo: add your logic here and delete this line
 	var user usermodel.UserModel
+
+	if l.svcCtx.DB == nil {
+		fmt.Println("db is nil")
+	}
+	if l.svcCtx == nil {
+		fmt.Println("svcCtx is nil")
+	}
+
 	err := l.svcCtx.DB.Where("ID = ?", in.UserId).First(&user).Error
 	if err != nil {
 		return &user_grpc.UserInfoResponse{
 			Data: []byte("user ID not found"),
 		}, err
 	}
-	Update(in.Nickname, user.NickName)
-	Update(in.Role, user.Role)
-	Update(in.Abstract, user.Abstract)
-	Update(in.Avatar, user.Avatar)
+	UpdateString(in.Nickname, &user.NickName)
+	UpdateInt(int8(in.Role), &user.Role)
+	UpdateString(in.Abstract, &user.Abstract)
+	UpdateString(in.Avatar, &user.Avatar)
 
-	err = l.svcCtx.DB.Model(&usermodel.UserModel{}).Where("id = ?", in.UserId).Update("nick_name", user.NickName).Error
+	fmt.Println("in.userid:", in.UserId)
+	fmt.Println("in;user:", in.Abstract, ";", user.Abstract)
+
+	err = l.svcCtx.DB.Model(&usermodel.UserModel{}).Where("id = ?", in.UserId).UpdateColumns(&user).Error
 	if err != nil {
 		return &user_grpc.UserInfoResponse{
 			Data: []byte("update failed"),
 		}, err
 	}
-	err = l.svcCtx.DB.Model(&usermodel.UserModel{}).Where("id=?", in.UserId).Update("avatar", user.Avatar).Error
-	if err != nil {
-		return &user_grpc.UserInfoResponse{
-			Data: []byte("update failed"),
-		}, err
-
-	}
-	err = l.svcCtx.DB.Model(&usermodel.UserModel{}).Where("id=?", in.UserId).Update("abstract", user.Abstract).Error
-	if err != nil {
-		return &user_grpc.UserInfoResponse{
-			Data: []byte("update failed"),
-		}, err
-
-	}
-	err = l.svcCtx.DB.Model(&usermodel.UserModel{}).Where("id=?", in.UserId).Update("role", user.Role).Error
-	if err != nil {
-		return &user_grpc.UserInfoResponse{
-			Data: []byte("update failed"),
-		}, err
-
-	}
-	fmt.Println("98797129719321", user)
 
 	return &user_grpc.UserInfoResponse{
 		Data: []byte("update successfully"),
 	}, nil
 }
-func Update(val1 any, val2 any) {
-	if reflect.TypeOf(val1) == reflect.TypeOf("sss") {
-		if val1 != "" {
-			val2 = val1
-		}
-	} else {
-		if val1 != 0 {
-			val2 = val1
-		}
-	}
 
+// 注意这里的内部函数对外部参数的修改问题，这里的参数是指针，所以可以修改外部参数，搭配&使用效果更佳哦
+func UpdateString(val1 string, val2 *string) {
+	if val1 != "" {
+		*val2 = val1
+	}
+}
+func UpdateInt(val1 int8, val2 *int8) {
+	if val1 != 0 {
+		*val2 = val1
+	}
 }

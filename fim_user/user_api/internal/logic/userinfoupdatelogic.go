@@ -27,7 +27,7 @@ func NewUserInfoUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Us
 func (l *UserInfoUpdateLogic) UserInfoUpdate(req *types.UserInfoUpdateRequest) (resp *types.UserInfoUpdateResponse, err error) {
 	// todo: add your logic here and delete this line
 
-	_, err = l.svcCtx.UserRpc.UserInfoUpdate(context.Background(), &users.UserInfoUpdateRequest{
+	rpcresp, err := l.svcCtx.UserRpc.UserInfoUpdate(context.Background(), &users.UserInfoUpdateRequest{
 		UserId:   uint32(req.UserId),
 		Nickname: derefString(req.Nickname, ""),
 		Role:     int32(derefInt(req.Role, 0)),
@@ -40,7 +40,7 @@ func (l *UserInfoUpdateLogic) UserInfoUpdate(req *types.UserInfoUpdateRequest) (
 	}
 
 	return &types.UserInfoUpdateResponse{
-		Data: resp.Data,
+		Data: string(rpcresp.Data),
 	}, nil
 }
 func derefString(s *string, defaultVal string) string {
