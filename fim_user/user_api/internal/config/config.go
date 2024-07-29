@@ -18,4 +18,8 @@ type Config struct {
 	}
 	UserRpc zrpc.RpcClientConf
 	Etcd    string
+	Auth    struct {
+		AccessSecret string
+		AccessExpire int
+	}
 }

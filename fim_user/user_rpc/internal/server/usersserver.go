@@ -41,3 +41,13 @@ func (s *UsersServer) UserConfUpdate(ctx context.Context, in *user_grpc.UserConf
 	l := logic.NewUserConfUpdateLogic(ctx, s.svcCtx)
 	return l.UserConfUpdate(in)
 }
+
+func (s *UsersServer) UserConf(ctx context.Context, in *user_grpc.UserInfoRequest) (*user_grpc.UserInfoResponse, error) {
+	l := logic.NewUserConfLogic(ctx, s.svcCtx)
+	return l.UserConf(in)
+}
+
+func (s *UsersServer) FriendInfo(ctx context.Context, in *user_grpc.FriendInfoRequest) (*user_grpc.FriendInfoResponse, error) {
+	l := logic.NewFriendInfoLogic(ctx, s.svcCtx)
+	return l.FriendInfo(in)
+}

@@ -13,6 +13,8 @@ import (
 )
 
 type (
+	FriendInfoRequest     = user_grpc.FriendInfoRequest
+	FriendInfoResponse    = user_grpc.FriendInfoResponse
 	UserConfUpdateRequest = user_grpc.UserConfUpdateRequest
 	UserCreateRequest     = user_grpc.UserCreateRequest
 	UserCreateResponse    = user_grpc.UserCreateResponse
@@ -26,6 +28,8 @@ type (
 		UserInfo(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 		UserInfoUpdate(ctx context.Context, in *UserInfoUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 		UserConfUpdate(ctx context.Context, in *UserConfUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
+		UserConf(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
+		FriendInfo(ctx context.Context, in *FriendInfoRequest, opts ...grpc.CallOption) (*FriendInfoResponse, error)
 	}
 
 	defaultUsers struct {
@@ -57,4 +61,14 @@ func (m *defaultUsers) UserInfoUpdate(ctx context.Context, in *UserInfoUpdateReq
 func (m *defaultUsers) UserConfUpdate(ctx context.Context, in *UserConfUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error) {
 	client := user_grpc.NewUsersClient(m.cli.Conn())
 	return client.UserConfUpdate(ctx, in, opts...)
+}
+
+func (m *defaultUsers) UserConf(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error) {
+	client := user_grpc.NewUsersClient(m.cli.Conn())
+	return client.UserConf(ctx, in, opts...)
+}
+
+func (m *defaultUsers) FriendInfo(ctx context.Context, in *FriendInfoRequest, opts ...grpc.CallOption) (*FriendInfoResponse, error) {
+	client := user_grpc.NewUsersClient(m.cli.Conn())
+	return client.FriendInfo(ctx, in, opts...)
 }

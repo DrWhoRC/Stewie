@@ -47,6 +47,13 @@ message VerifyQuestion{
     string q3 = 5;
     string a3 = 6;
 }
+message FriendInfoRequest{
+    uint32 user_id = 1;
+    uint32 friend_id = 2;
+}
+message FriendInfoResponse{
+    bytes data = 1; //user and userconfig json
+}
 
 
 service Users{
@@ -54,6 +61,8 @@ service Users{
     rpc UserInfo(UserInfoRequest) returns (UserInfoResponse);
     rpc UserInfoUpdate(UserInfoUpdateRequest) returns (UserInfoResponse);
     rpc UserConfUpdate(UserConfUpdateRequest)returns (UserInfoResponse);
+    rpc UserConf(UserInfoRequest) returns (UserInfoResponse);
+    rpc FriendInfo(FriendInfoRequest) returns (FriendInfoResponse);
 }
 
 //goctl rpc protoc user_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

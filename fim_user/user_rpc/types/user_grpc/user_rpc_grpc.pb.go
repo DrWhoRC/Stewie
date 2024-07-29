@@ -23,6 +23,8 @@ const (
 	Users_UserInfo_FullMethodName       = "/user_grpc.Users/UserInfo"
 	Users_UserInfoUpdate_FullMethodName = "/user_grpc.Users/UserInfoUpdate"
 	Users_UserConfUpdate_FullMethodName = "/user_grpc.Users/UserConfUpdate"
+	Users_UserConf_FullMethodName       = "/user_grpc.Users/UserConf"
+	Users_FriendInfo_FullMethodName     = "/user_grpc.Users/FriendInfo"
 )
 
 // UsersClient is the client API for Users service.
@@ -33,6 +35,8 @@ type UsersClient interface {
 	UserInfo(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 	UserInfoUpdate(ctx context.Context, in *UserInfoUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
 	UserConfUpdate(ctx context.Context, in *UserConfUpdateRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
+	UserConf(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error)
+	FriendInfo(ctx context.Context, in *FriendInfoRequest, opts ...grpc.CallOption) (*FriendInfoResponse, error)
 }
 
 type usersClient struct {
@@ -83,6 +87,26 @@ func (c *usersClient) UserConfUpdate(ctx context.Context, in *UserConfUpdateRequ
 	return out, nil
 }
 
+func (c *usersClient) UserConf(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserInfoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserInfoResponse)
+	err := c.cc.Invoke(ctx, Users_UserConf_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersClient) FriendInfo(ctx context.Context, in *FriendInfoRequest, opts ...grpc.CallOption) (*FriendInfoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FriendInfoResponse)
+	err := c.cc.Invoke(ctx, Users_FriendInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UsersServer is the server API for Users service.
 // All implementations must embed UnimplementedUsersServer
 // for forward compatibility
@@ -91,6 +115,8 @@ type UsersServer interface {
 	UserInfo(context.Context, *UserInfoRequest) (*UserInfoResponse, error)
 	UserInfoUpdate(context.Context, *UserInfoUpdateRequest) (*UserInfoResponse, error)
 	UserConfUpdate(context.Context, *UserConfUpdateRequest) (*UserInfoResponse, error)
+	UserConf(context.Context, *UserInfoRequest) (*UserInfoResponse, error)
+	FriendInfo(context.Context, *FriendInfoRequest) (*FriendInfoResponse, error)
 	mustEmbedUnimplementedUsersServer()
 }
 
@@ -109,6 +135,12 @@ func (UnimplementedUsersServer) UserInfoUpdate(context.Context, *UserInfoUpdateR
 }
 func (UnimplementedUsersServer) UserConfUpdate(context.Context, *UserConfUpdateRequest) (*UserInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserConfUpdate not implemented")
+}
+func (UnimplementedUsersServer) UserConf(context.Context, *UserInfoRequest) (*UserInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserConf not implemented")
+}
+func (UnimplementedUsersServer) FriendInfo(context.Context, *FriendInfoRequest) (*FriendInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FriendInfo not implemented")
 }
 func (UnimplementedUsersServer) mustEmbedUnimplementedUsersServer() {}
 
@@ -195,6 +227,42 @@ func _Users_UserConfUpdate_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Users_UserConf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).UserConf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_UserConf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).UserConf(ctx, req.(*UserInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Users_FriendInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FriendInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServer).FriendInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Users_FriendInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServer).FriendInfo(ctx, req.(*FriendInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Users_ServiceDesc is the grpc.ServiceDesc for Users service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -217,6 +285,14 @@ var Users_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserConfUpdate",
 			Handler:    _Users_UserConfUpdate_Handler,
+		},
+		{
+			MethodName: "UserConf",
+			Handler:    _Users_UserConf_Handler,
+		},
+		{
+			MethodName: "FriendInfo",
+			Handler:    _Users_FriendInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

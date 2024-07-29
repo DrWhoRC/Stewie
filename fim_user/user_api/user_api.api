@@ -21,6 +21,19 @@ type VerifyQuestion {
 	A3 *string `json:"a3"`
 }
 
+type UserConfResponse {
+	UserId             uint           `header:"UserId"`
+	Online             bool           `json:"online,optional" user_conf:"online"` //是否在线
+	RecallMsg          string         `gorm:"size:32" json:"recallMsg,optional" user_conf:"recallMsg"` //撤回消息的提示内容
+	FriendOnlineNotify bool           `json:"friendOnlineNotify,optional" user_conf:"friendOnlineNotify"` //好友上线通知
+	Mute               bool           `json:"mute,optional" user_conf:"mute"` //是否静音
+	SecureLink         bool           `json:"secureLink,optional" user_conf:"secureLink"` //是否使用安全链接
+	SavePwd            bool           `json:"savePwd,optional" user_conf:"savePwd"` //是否保存密码
+	SearchUser         int8           `json:"searchUser,optional" user_conf:"searchUser"` //是否允许搜索用户:0-no; 1-IDsearch; 2-Nicknamesearch
+	Verification       int8           `json:"verification,optional" user_conf:"verification"` //好友验证方式:0-no; 1-need verifyMSG; 2-need answer; 3-need answer correct; 4-allow everyone
+	VerifyQuestion     VerifyQuestion `json:"verifyQuestion,optional" user_conf:"verifyQuestion"` //验证问题: Only needed when friendVerify=2 or 3
+}
+
 type UserConfUpdateRequest {
 	UserId             uint            `header:"UserId"`
 	Online             *bool           `json:"online,optional" user_conf:"online"` //是否在线
@@ -50,9 +63,29 @@ type UserInfoUpdateResponse {
 	Data string `json:"data"`
 }
 
+type FriendInfoRequest {
+	UserId   uint `header:"UserId"`
+	FriendId uint `json:"friendId"` //好友id
+}
+
+type FriendInfoResponse {
+	Id       uint   `json:"id"`
+	Nickname string `json:"nickname"`
+	Role     int8   `json:"role"`
+	Abstract string `json:"abstract"`
+	Avatar   string `json:"avatar"`
+	Notice   string `json:"notice"`
+}
+
 service users {
 	@handler GetUserInfo
 	post /api/user/user_info (UserInfoRequest) returns (UserInfoResponse)
+
+	@handler GetUserConf
+	post /api/user/user_conf (UserInfoRequest) returns (UserConfResponse)
+
+	@handler GetFriendInfo
+	post /api/user/friend_info (FriendInfoRequest) returns (FriendInfoResponse)
 
 	@handler UserInfoUpdate
 	put /api/user/user_info_update (UserInfoUpdateRequest) returns (UserInfoUpdateResponse)

@@ -17,3 +17,6 @@ UserRpc:
     Hosts:
     - 127.0.0.1:2379
     Key: userrpc.rpc
+Auth:
+  AccessSecret: wpywatsendw0517
+  AccessExpire: 3600
