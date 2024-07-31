@@ -1,0 +1,14 @@
+syntax = "v1"
+
+type ImageUploadRequest {
+
+}
+type ImageUploadResponse {
+    Url string `json:"url"`
+}
+
+service file{
+    @handler ImageUpload
+    get /api/file/image_pload (ImageUploadRequest) returns (ImageUploadResponse)
+}
+//goctl api go -api file_api.api -dir .
