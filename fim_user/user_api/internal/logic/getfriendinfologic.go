@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	usermodel "fim/fim_user/models"
 	"fim/fim_user/user_api/internal/svc"
 	"fim/fim_user/user_api/internal/types"
 	"fim/fim_user/user_rpc/users"
@@ -38,6 +39,7 @@ func (l *GetFriendInfoLogic) GetFriendInfo(req *types.FriendInfoRequest) (resp *
 		return nil, err
 	}
 	var friend types.FriendInfoResponse
+	var friend_info usermodel.FriendModel
 
 	err = json.Unmarshal(res.Data, &friend)
 	fmt.Println(string(res.Data))
@@ -45,13 +47,29 @@ func (l *GetFriendInfoLogic) GetFriendInfo(req *types.FriendInfoRequest) (resp *
 		logx.Error(err)
 		return
 	}
+	err = json.Unmarshal(res.Data, &friend_info)
+	if err != nil {
+		logx.Error(err)
+		return
+	}
 
-	return &types.FriendInfoResponse{
-		Id:       friend.Id,
-		Nickname: friend.Nickname,
-		Role:     friend.Role,
-		Abstract: friend.Abstract,
-		Avatar:   friend.Avatar,
-		Notice:   friend.Notice,
-	}, nil
+	if req.UserId == friend_info.SenderID {
+		return &types.FriendInfoResponse{
+			Id:       friend.Id,
+			Nickname: friend.Nickname,
+			Role:     friend.Role,
+			Abstract: friend.Abstract,
+			Avatar:   friend.Avatar,
+			Notice:   friend_info.RecvUserNotice,
+		}, nil
+	} else {
+		return &types.FriendInfoResponse{
+			Id:       friend.Id,
+			Nickname: friend.Nickname,
+			Role:     friend.Role,
+			Abstract: friend.Abstract,
+			Avatar:   friend.Avatar,
+			Notice:   friend_info.SendUserNotice,
+		}, nil
+	}
 }
