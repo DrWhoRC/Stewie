@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 
+	"fim/common/etcd"
 	"fim/fim_file/file_api/internal/config"
 	"fim/fim_file/file_api/internal/handler"
 	"fim/fim_file/file_api/internal/svc"
@@ -25,6 +26,8 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	etcd.DeliverAddr(c.Etcd, c.Name+"_api", fmt.Sprintf("%s:%d", c.Host, c.Port))
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

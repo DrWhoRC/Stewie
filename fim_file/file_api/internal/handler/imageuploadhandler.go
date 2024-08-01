@@ -35,7 +35,12 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		bytedata, _ := io.ReadAll(file)
+		bytedata, err := io.ReadAll(file)
+		if err != nil {
+			httpx.ErrorCtx(r.Context(), w, err)
+			return
+		}
+
 		fileName := fileHeader.Filename
 		filePath := path.Join("uploads", imageType, fileName)
 		err = os.WriteFile(filePath, bytedata, 0666)

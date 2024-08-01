@@ -85,11 +85,16 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 	//但是！！！proxyReq.ContentLength和header中的contentlength不是一个东西，
 	//所以要手动设置proxyReq.ContentLength的长度！
 
-	proxyReq.Header.Set("Content-Type", "application/json")
+	contentType := req.Header.Get("Content-Type")
+	proxyReq.Header.Set("Content-Type", contentType)
 
+	// 然后复制其他header
 	for name, values := range req.Header {
-		for _, value := range values {
-			proxyReq.Header.Add(name, value)
+		// 跳过Content-Type，因为我们已经设置过了
+		if name != "Content-Type" {
+			for _, value := range values {
+				proxyReq.Header.Add(name, value)
+			}
 		}
 	}
 
