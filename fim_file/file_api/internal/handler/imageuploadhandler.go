@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strings"
 
 	"fim/fim_file/file_api/internal/logic"
 	"fim/fim_file/file_api/internal/svc"
@@ -29,6 +30,33 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
+
+		//file size restriction
+		mSize := float64(fileHeader.Size) / float64(1024*1024)
+		if mSize > svcCtx.Config.FileSize {
+			httpx.Error(w, errors.New("file size larger than 2M"))
+			logx.Errorf("file size larger than 2M")
+			return
+		}
+
+		//file suffix whitelist
+		fileNameList := strings.Split(fileHeader.Filename, ".")
+		if len(fileNameList) < 2 {
+			httpx.Error(w, errors.New("file suffix is empty"))
+			return
+		}
+		suffix := fileNameList[len(fileNameList)-1]
+		for k, v := range svcCtx.Config.WhiteList {
+			if v == suffix {
+				break
+			}
+			if k == len(svcCtx.Config.WhiteList)-1 {
+				httpx.Error(w, errors.New("file format is not supported"))
+				return
+			}
+		}
+
+		//file name same check
 		imageType := r.FormValue("imageType")
 		if imageType == "" {
 			httpx.ErrorCtx(r.Context(), w, errors.New("imageType is empty"))

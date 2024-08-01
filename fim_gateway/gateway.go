@@ -97,13 +97,13 @@ func gateway(res http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
-
+	fmt.Println(proxyReq.RequestURI)
 	proxyReq.Header.Set("X-Forwarded-For", remoteAddr[0])
 	response, err := http.DefaultClient.Do(proxyReq)
 
 	if err != nil {
 		fmt.Println(err)
-		res.Write([]byte("服务异常"))
+		res.Write([]byte("当前服务异常"))
 		return
 	}
 	io.Copy(res, response.Body)
@@ -119,19 +119,24 @@ func Auth(res http.ResponseWriter, req *http.Request, remoteAddr []string) {
 
 	authReq, _ := http.NewRequest("POST", authUrl, req.Body)
 	req.Body = io.NopCloser(bytes.NewReader(body01))
-	authReq.Header.Set("Content-Type", "application/json")
-	authReq.ContentLength = int64(len(body01))
-	authReq.Header.Set("X-Forwarded-For", remoteAddr[0])
+	contentType := req.Header.Get("Content-Type")
+	authReq.Header.Set("Content-Type", contentType)
+
+	// 然后复制其他header
 	for name, values := range req.Header {
-		for _, value := range values {
-			authReq.Header.Add(name, value)
+		// 跳过Content-Type，因为我们已经设置过了
+		if name != "Content-Type" {
+			for _, value := range values {
+				authReq.Header.Add(name, value)
+			}
 		}
 	}
-
+	authReq.ContentLength = int64(len(body01))
+	authReq.Header.Set("X-Forwarded-For", remoteAddr[0])
 	authRes, err := http.DefaultClient.Do(authReq)
 	if err != nil {
 		fmt.Println("authres:", err)
-		res.Write([]byte("服务异常"))
+		res.Write([]byte("auth服务异常"))
 		return
 	}
 	type Response struct {
