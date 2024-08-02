@@ -7,4 +7,5 @@ type Config struct {
 	Etcd      string
 	FileSize  float64
 	WhiteList []string
+	UploadDir string
 }

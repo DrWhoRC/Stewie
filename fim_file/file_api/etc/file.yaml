@@ -13,3 +13,4 @@ WhiteList:
   - jpeg
   - gif
   - webp
+UploadDir: uploads

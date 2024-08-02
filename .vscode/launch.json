@@ -1,0 +1,44 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "auth_api",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/fim_auth/auth_api/auth.go"
+        },
+        {
+            "name": "file_api",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/fim_file/file_api/file.go"
+        },
+        {
+            "name": "user_api",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/fim_user/user_api/users.go"
+        },
+        {
+            "name": "user_rpc",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/fim_user/user_rpc/userrpc.go"
+        },
+        {
+            "name": "gateway",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/fim_gateway/gateway.go"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch All Services",
+            "configurations": ["auth_api", "file_api", "user_api", "user_rpc", "gateway"]
+        }
+    ]
+}
