@@ -6,6 +6,7 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/zeromicro/go-zero v1.6.6
+	go.etcd.io/etcd/client/v3 v3.5.14
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.34.2
 	gorm.io/driver/mysql v1.5.7
@@ -59,7 +60,6 @@ require (
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.14 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.14 // indirect
-	go.etcd.io/etcd/client/v3 v3.5.14 // indirect
 	go.opentelemetry.io/otel v1.19.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.19.0 // indirect

@@ -77,6 +77,28 @@ type FriendInfoResponse {
 	Notice   string `json:"notice"`
 }
 
+type FriendListRequest {
+	UserId uint `header:"UserId"`
+	Role   int8 `header:"Role"`
+	Page   int  `form:"page"`
+	Limit  int  `form:"limit"`
+}
+
+type FriendListResponse {
+	List  []FriendInfoResponse `json:"list"`
+	Count int                  `json:"count"`
+}
+
+type FriendNoticeUpdateRequest {
+	UserId   uint   `header:"UserId"`
+	FriendId uint   `json:"friendId"` //好友id
+	Notice   string `json:"notice"` //好友备注
+}
+
+type FriendNoticeUpdateResponse {
+	Data string `json:"data"`
+}
+
 service users {
 	@handler GetUserInfo
 	post /api/user/user_info (UserInfoRequest) returns (UserInfoResponse)
@@ -92,6 +114,12 @@ service users {
 
 	@handler UserConfUpdate
 	put /api/user/user_conf_update (UserConfUpdateRequest) returns (UserConfUpdateResponse)
+
+	@handler GetFriendList
+	post /api/user/friend_list (FriendListRequest) returns (FriendListResponse)
+
+	@handler FrinedNoticeUpdate
+	put /api/user/friend_notice_update (FriendNoticeUpdateRequest) returns (FriendNoticeUpdateResponse)
 }
 
 //goctl api go -api user_api.api -dir .

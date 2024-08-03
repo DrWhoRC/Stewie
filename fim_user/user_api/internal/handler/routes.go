@@ -19,6 +19,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/api/user/friend_list",
+				Handler: GetFriendListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/api/user/friend_notice_update",
+				Handler: FrinedNoticeUpdateHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/api/user/user_conf",
 				Handler: GetUserConfHandler(serverCtx),
 			},

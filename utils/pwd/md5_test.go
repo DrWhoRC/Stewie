@@ -12,4 +12,4 @@ func TestMd5(t *testing.T) {
 	fmt.Println(pwd2)
 }
 
-//265a0bd24dd5f106bd9b4efd34a9a18e
+// 265a0bd24dd5f106bd9b4efd34a9a18e

@@ -15,6 +15,28 @@ type FriendInfoResponse struct {
 	Notice   string `json:"notice"`
 }
 
+type FriendListRequest struct {
+	UserId uint `header:"UserId"`
+	Role   int8 `header:"Role"`
+	Page   int  `form:"page"`
+	Limit  int  `form:"limit"`
+}
+
+type FriendListResponse struct {
+	List  []FriendInfoResponse `json:"list"`
+	Count int                  `json:"count"`
+}
+
+type FriendNoticeUpdateRequest struct {
+	UserId   uint   `header:"UserId"`
+	FriendId uint   `json:"friendId"` //好友id
+	Notice   string `json:"notice"`   //好友备注
+}
+
+type FriendNoticeUpdateResponse struct {
+	Data string `json:"data"`
+}
+
 type UserConfResponse struct {
 	UserId             uint           `header:"UserId"`
 	Online             bool           `json:"online,optional" user_conf:"online"`                         //是否在线
