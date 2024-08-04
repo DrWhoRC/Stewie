@@ -28,6 +28,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: FrinedNoticeUpdateHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodGet,
+				Path:    "/api/user/search_friend",
+				Handler: SearchFriendHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/api/user/user_conf",
 				Handler: GetUserConfHandler(serverCtx),

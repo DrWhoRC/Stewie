@@ -99,6 +99,27 @@ type FriendNoticeUpdateResponse {
 	Data string `json:"data"`
 }
 
+type SearchRequest {
+	UserId uint   `header:"UserId"`
+	Key    string `form:"key"` //id and nickname of users
+	Online bool   `form:"online"` //online users
+	Page   int    `form:"page"`
+	Limit  int    `form:"limit"`
+}
+
+type SearchInfo {
+	Id       uint   `json:"id"`
+	Nickname string `json:"nickname"`
+	Abstract string `json:"abstract"`
+	Avatar   string `json:"avatar"`
+	IsFriend bool   `json:"isFriend"` //is friend or not
+}
+
+type SearchResponse {
+	List  []SearchInfo `json:"list"`
+	Count int          `json:"count"`
+}
+
 service users {
 	@handler GetUserInfo
 	post /api/user/user_info (UserInfoRequest) returns (UserInfoResponse)
@@ -120,6 +141,9 @@ service users {
 
 	@handler FrinedNoticeUpdate
 	put /api/user/friend_notice_update (FriendNoticeUpdateRequest) returns (FriendNoticeUpdateResponse)
+
+	@handler SearchFriend
+	get /api/user/search_friend (SearchRequest) returns (SearchResponse)
 }
 
 //goctl api go -api user_api.api -dir .
