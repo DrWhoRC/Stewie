@@ -112,6 +112,18 @@ type UserInfoUpdateResponse struct {
 	Data string `json:"data"`
 }
 
+type UserValidRequest struct {
+	UserId   uint   `header:"UserId"`
+	FriendId uint   `json:"friendId"`
+	ValidMsg string `json:"validMsg"`
+}
+
+type UserValidResponse struct {
+	Verification   int8           `json:"verification"`
+	VerifyQuestion VerifyQuestion `json:"verifyQuestion"`
+	Data           string         `json:"data"`
+}
+
 type VerifyQuestion struct {
 	Q1 *string `json:"q1"`
 	A1 *string `json:"a1"`

@@ -120,6 +120,18 @@ type SearchResponse {
 	Count int          `json:"count"`
 }
 
+type UserValidRequest {
+	UserId   uint   `header:"UserId"`
+	FriendId uint   `json:"friendId"`
+	ValidMsg string `json:"validMsg"`
+}
+
+type UserValidResponse {
+	Verification   int8           `json:"verification"`
+	VerifyQuestion VerifyQuestion `json:"verifyQuestion"`
+	Data           string         `json:"data"`
+}
+
 service users {
 	@handler GetUserInfo
 	post /api/user/user_info (UserInfoRequest) returns (UserInfoResponse)
@@ -144,6 +156,9 @@ service users {
 
 	@handler SearchFriend
 	get /api/user/search_friend (SearchRequest) returns (SearchResponse)
+
+	@handler UserValid
+	get /api/user/user_valid (UserValidRequest) returns (UserValidResponse)
 }
 
 //goctl api go -api user_api.api -dir .
