@@ -28,8 +28,19 @@ func NewUserValidLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserVal
 func (l *UserValidLogic) UserValid(req *types.UserValidRequest) (resp *types.UserValidResponse, err error) {
 	// todo: add your logic here and delete this line
 
+	var friendShip usermodel.FriendModel
+	l.svcCtx.DB.Model(&usermodel.FriendModel{}).Where(
+		"(sender_id = ? AND receiver_id = ?) OR (receiver_id = ? AND sender_id = ?)",
+		req.UserId, req.FriendId, req.UserId, req.FriendId).First(&friendShip)
+	if friendShip.ID != 0 {
+		resp = new(types.UserValidResponse)
+		resp.Data = "you are already friends"
+		return
+	}
+
 	var userConf usermodel.UserConfigModel
 	l.svcCtx.DB.Model(&usermodel.UserConfigModel{}).Where("user_id = ?", req.FriendId).First(&userConf)
+	var friendVerify usermodel.FriendVerifyModel
 	resp = new(types.UserValidResponse)
 	resp.Verification = userConf.Verification
 	switch userConf.Verification {
@@ -37,6 +48,10 @@ func (l *UserValidLogic) UserValid(req *types.UserValidRequest) (resp *types.Use
 		resp.Data = "this is a private account, he/she does not allow to add friends"
 	case 1: //需要验证消息
 		resp.Data = "the message has been forwarded to the user, please wait for the user to confirm"
+		friendVerify.SenderID = req.UserId
+		friendVerify.ReceiverID = req.FriendId
+		friendVerify.Attached = req.ValidMsg
+		l.svcCtx.DB.Create(&friendVerify)
 	case 2: //需要验证问题的答案
 		if userConf.VerifyQuestion != nil {
 			resp.VerifyQuestion = types.VerifyQuestion{
@@ -57,6 +72,7 @@ func (l *UserValidLogic) UserValid(req *types.UserValidRequest) (resp *types.Use
 		}
 	case 4: //不需要验证
 		AddToFriend(req.UserId, req.FriendId, l.svcCtx.DB)
+		resp.Data = "add friend successfully"
 	default:
 	}
 

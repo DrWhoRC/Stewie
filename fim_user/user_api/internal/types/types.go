@@ -115,13 +115,35 @@ type UserInfoUpdateResponse struct {
 type UserValidRequest struct {
 	UserId   uint   `header:"UserId"`
 	FriendId uint   `json:"friendId"`
-	ValidMsg string `json:"validMsg"`
+	ValidMsg string `json:"validMsg,optional"`
 }
 
 type UserValidResponse struct {
 	Verification   int8           `json:"verification"`
 	VerifyQuestion VerifyQuestion `json:"verifyQuestion"`
 	Data           string         `json:"data"`
+}
+
+type ValidAnswerRequest struct {
+	UserId         uint           `header:"UserId"`
+	FriendId       uint           `json:"friendId"`
+	VerifyQuestion VerifyQuestion `json:"verifyQuestion,optional"`
+}
+
+type ValidAnswerResponse struct {
+	Data string `json:"data"`
+}
+
+type VerifyMessageRequest struct {
+	SenderId       uint           `header:"SenderId"`
+	ReceiverId     uint           `header:"ReceiverId"`
+	Agree          int            `json:"agree"`
+	Data           string         `json:"data,optional"`
+	VerifyQuestion VerifyQuestion `json:"verifyQuestion,optional"`
+}
+
+type VerifyMessageResponse struct {
+	Data string `json:"data"`
 }
 
 type VerifyQuestion struct {

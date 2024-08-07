@@ -123,13 +123,35 @@ type SearchResponse {
 type UserValidRequest {
 	UserId   uint   `header:"UserId"`
 	FriendId uint   `json:"friendId"`
-	ValidMsg string `json:"validMsg"`
+	ValidMsg string `json:"validMsg,optional"`
 }
 
 type UserValidResponse {
 	Verification   int8           `json:"verification"`
 	VerifyQuestion VerifyQuestion `json:"verifyQuestion"`
 	Data           string         `json:"data"`
+}
+
+type ValidAnswerRequest {
+	UserId         uint           `header:"UserId"`
+	FriendId       uint           `json:"friendId"`
+	VerifyQuestion VerifyQuestion `json:"verifyQuestion,optional"`
+}
+
+type ValidAnswerResponse {
+	Data string `json:"data"`
+}
+
+type VerifyMessageRequest {
+	SenderId       uint           `header:"SenderId"`
+	ReceiverId     uint           `header:"ReceiverId"`
+	Agree          int            `json:"agree"`
+	Data           string         `json:"data,optional"`
+	VerifyQuestion VerifyQuestion `json:"verifyQuestion,optional"`
+}
+
+type VerifyMessageResponse {
+	Data string `json:"data"`
 }
 
 service users {
@@ -159,6 +181,12 @@ service users {
 
 	@handler UserValid
 	get /api/user/user_valid (UserValidRequest) returns (UserValidResponse)
+
+	@handler ValidAnswer
+	post /api/user/valid_answer (ValidAnswerRequest) returns (ValidAnswerResponse)
+
+	@handler VerifyMessage
+	post /api/user/verify_message (VerifyMessageRequest) returns (VerifyMessageResponse)
 }
 
 //goctl api go -api user_api.api -dir .
