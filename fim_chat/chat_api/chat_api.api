@@ -1,0 +1,41 @@
+syntax = "v1"
+
+type ChatHistoryRequest {
+	UserId uint `header:"UserId"`
+	Page   uint `form:"page"`
+	Limit  uint `form:"limit"`
+}
+
+type ChatHistoryResponse {
+	MsgId     uint   `json:"msgId"`
+	UserId    uint   `json:"userId"`
+	Avatar    string `json:"avatar"`
+	Nickname  string `json:"nickname"`
+	CreatedAt string `json:"createdAt"`
+//Msg any `json:"msg"`
+}
+
+type ChatSessionDisplayRequest {
+	UserId uint `header:"UserId"`
+	Page   uint `form:"page"`
+	Limit  uint `form:"limit"`
+	Key    int  `form:"key"`
+}
+
+type ChatSessionDisplayResponse {
+	UserId     uint   `json:"userId"`
+	Avatar     string `json:"avatar"`
+	Nickname   string `json:"nickname"`
+	CreatedAt  string `json:"created_at"`
+	MsgPreview string `json:"msgPreview"`
+}
+
+service chat {
+	@handler ChatHistory
+	get /api/chat/chat_history (ChatHistoryRequest) returns (ChatHistoryResponse)
+
+	@handler ChatSessionDisplay
+	get /api/chat/chat_session_display (ChatSessionDisplayRequest) returns (ChatSessionDisplayResponse)
+}
+
+//goctl api go -api chat_api.api -dir .

@@ -13,6 +13,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodDelete,
+				Path:    "/api/user/friend_delete",
+				Handler: FriendDeleteHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/api/user/friend_info",
 				Handler: GetFriendInfoHandler(serverCtx),

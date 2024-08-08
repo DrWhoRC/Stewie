@@ -154,6 +154,15 @@ type VerifyMessageResponse {
 	Data string `json:"data"`
 }
 
+type FriendDeleteRequest {
+	UserId   uint `header:"UserId"`
+	FriendId uint `json:"friendId"`
+}
+
+type FriendDeleteResponse {
+	Data string `json:"data"`
+}
+
 service users {
 	@handler GetUserInfo
 	post /api/user/user_info (UserInfoRequest) returns (UserInfoResponse)
@@ -187,6 +196,9 @@ service users {
 
 	@handler VerifyMessage
 	post /api/user/verify_message (VerifyMessageRequest) returns (VerifyMessageResponse)
+
+	@handler FriendDelete
+	delete /api/user/friend_delete (FriendDeleteRequest) returns (FriendDeleteResponse)
 }
 
 //goctl api go -api user_api.api -dir .
