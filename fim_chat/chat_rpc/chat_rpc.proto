@@ -1,0 +1,16 @@
+syntax = "proto3";
+package chat_rpc;
+option go_package = "./chat_rpc";
+message UserChatRequest{
+    uint32 sender = 1;
+    uint32 receiver = 2;
+    bytes msg = 3; //msg json
+}
+message UserChatResponse{
+    int32 user_id = 1;
+}
+service Chat{
+    rpc CreateUser(UserChatRequest) returns (UserChatResponse);
+}
+
+//goctl rpc protoc chat_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.
