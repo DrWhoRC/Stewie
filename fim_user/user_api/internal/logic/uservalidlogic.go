@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"fim/fim_chat/chat_rpc/chat"
 	usermodel "fim/fim_user/models"
 	"fim/fim_user/user_api/internal/svc"
 	"fim/fim_user/user_api/internal/types"
@@ -52,6 +53,11 @@ func (l *UserValidLogic) UserValid(req *types.UserValidRequest) (resp *types.Use
 		friendVerify.ReceiverID = req.FriendId
 		friendVerify.Attached = req.ValidMsg
 		l.svcCtx.DB.Create(&friendVerify)
+		l.svcCtx.ChatRpc.UserChat(context.Background(), &chat.UserChatRequest{
+			Sender:   uint32(req.UserId),
+			Receiver: uint32(req.FriendId),
+			Msg:      []byte(req.ValidMsg),
+		})
 	case 2: //需要验证问题的答案
 		if userConf.VerifyQuestion != nil {
 			resp.VerifyQuestion = types.VerifyQuestion{

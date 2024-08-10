@@ -1,6 +1,6 @@
 Name: user
 Host: 0.0.0.0
-Port: 8889
+Port: 8899
 Mysql:
   Datasource: root:wpywatsendw0517@tcp(127.0.0.1:3306)/fim_v1?charset=utf8&parseTime=True&loc=Local
 Log:
@@ -17,6 +17,11 @@ UserRpc:
     Hosts:
     - 127.0.0.1:2379
     Key: userrpc.rpc
+ChatRpc:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: chatrpc.rpc
 Auth:
   AccessSecret: wpywatsendw0517
   AccessExpire: 3600

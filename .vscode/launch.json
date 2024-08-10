@@ -39,12 +39,18 @@
             "type": "go",
             "request": "launch",
             "program": "${workspaceFolder}/fim_chat/chat_api/chat.go"
+        },
+        {
+            "name": "chat_rpc",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/fim_chat/chat_rpc/chatrpc.go"
         }
     ],
     "compounds": [
         {
             "name": "Launch All Services",
-            "configurations": ["chat_api", "auth_api", "file_api", "user_api", "user_rpc", "gateway"]
+            "configurations": ["chat_rpc", "user_rpc", "auth_api", "file_api", "chat_api", "user_api", "gateway"]
         }
     ]
 }

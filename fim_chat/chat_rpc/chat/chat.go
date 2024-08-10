@@ -17,7 +17,7 @@ type (
 	UserChatResponse = chat_rpc.UserChatResponse
 
 	Chat interface {
-		CreateUser(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error)
+		UserChat(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error)
 	}
 
 	defaultChat struct {
@@ -31,7 +31,7 @@ func NewChat(cli zrpc.Client) Chat {
 	}
 }
 
-func (m *defaultChat) CreateUser(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error) {
+func (m *defaultChat) UserChat(ctx context.Context, in *UserChatRequest, opts ...grpc.CallOption) (*UserChatResponse, error) {
 	client := chat_rpc.NewChatClient(m.cli.Conn())
-	return client.CreateUser(ctx, in, opts...)
+	return client.UserChat(ctx, in, opts...)
 }

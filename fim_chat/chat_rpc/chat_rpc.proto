@@ -10,7 +10,7 @@ message UserChatResponse{
     int32 user_id = 1;
 }
 service Chat{
-    rpc CreateUser(UserChatRequest) returns (UserChatResponse);
+    rpc UserChat(UserChatRequest) returns (UserChatResponse);
 }
 
 //goctl rpc protoc chat_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

@@ -22,7 +22,7 @@ func NewChatServer(svcCtx *svc.ServiceContext) *ChatServer {
 	}
 }
 
-func (s *ChatServer) CreateUser(ctx context.Context, in *chat_rpc.UserChatRequest) (*chat_rpc.UserChatResponse, error) {
-	l := logic.NewCreateUserLogic(ctx, s.svcCtx)
-	return l.CreateUser(in)
+func (s *ChatServer) UserChat(ctx context.Context, in *chat_rpc.UserChatRequest) (*chat_rpc.UserChatResponse, error) {
+	l := logic.NewUserChatLogic(ctx, s.svcCtx)
+	return l.UserChat(in)
 }
