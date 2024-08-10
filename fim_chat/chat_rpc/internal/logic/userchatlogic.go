@@ -59,24 +59,24 @@ func MsgPreview(msg ctype.Msg) string {
 	case 0:
 		return *msg.Content
 	case 1:
-		return "[picture]"
+		return "[picture]-" + msg.ImageMsg.Title
 	case 2:
-		return "[file]"
+		return "[file]-" + msg.FileMsg.Title
 	case 3:
-		return "[voice]"
+		return "[voice]-"
 	case 4:
-		return "[video]"
+		return "[video]-" + msg.VideoMsg.Title
 	case 6:
-		return "[voice call]"
+		return "[voice call]-" + msg.VoiceCallMsg.StartTime.String()
 	case 7:
-		return "[video call]"
+		return "[video call]-" + msg.VideoCallMsg.StartTime.String()
 	case 8:
-		return "[Withdraw a message]"
+		return "[Withdraw a message-]" + msg.WithdrawMsg.Content
 	case 9:
-		return "[Quote a message]"
+		return "[Quote a message-]" + *msg.QuoteMsg.Msg.Content
 	case 10:
-		return "[@ Msg]"
+		return "[@ Msg]-" + msg.AtMsg.Content
 	default:
-		return "未知"
+		return "you have a new message"
 	}
 }
