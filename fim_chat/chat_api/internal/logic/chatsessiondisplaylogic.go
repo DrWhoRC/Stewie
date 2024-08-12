@@ -47,15 +47,18 @@ func (l *ChatSessionDisplayLogic) ChatSessionDisplay(req *types.ChatSessionDispl
 	}
 	var dataList []Data
 
-	l.svcCtx.DB.Table("(?) as u", l.svcCtx.DB.Model(&chatmodel.ChatModel{}).
-		Select("least(sender_id, receiver_id)	as sU",
-			"greatest(sender_id, receiver_id)	as rU",
-			"max(created_at)	as maxDate",
-			"max(msg_preview)	as maxPreview").
-		//妈的咋改啊，捏妈妈的，又要join来join去确保这个msg-preview是最新的msg
+	subQuery := l.svcCtx.DB.Model(&chatmodel.ChatModel{}).
+		Select("least(sender_id, receiver_id) as sU",
+			"greatest(sender_id, receiver_id) as rU",
+			"max(created_at) as maxDate").
 		Where("sender_id = ? OR receiver_id = ?", req.UserId, req.UserId).
-		Group("least(sender_id, receiver_id), greatest(sender_id, receiver_id)")).
-		Order("maxDate desc").Limit(int(req.Limit)).Offset(int(offset)).
+		Group("least(sender_id, receiver_id), greatest(sender_id, receiver_id)")
+
+	// 主查询：使用子查询获取最新消息的预览
+	l.svcCtx.DB.Table("(?) as u", subQuery).
+		Joins("JOIN chat_models cm ON cm.created_at = u.maxDate").
+		Select("u.sU, u.rU, u.maxDate, cm.msg_preview as maxPreview").
+		Order("u.maxDate desc").Limit(int(req.Limit)).Offset(int(offset)).
 		Scan(&dataList)
 
 	fmt.Println("dataList:", dataList[0])
