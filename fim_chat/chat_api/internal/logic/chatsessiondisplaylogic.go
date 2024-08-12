@@ -44,6 +44,7 @@ func (l *ChatSessionDisplayLogic) ChatSessionDisplay(req *types.ChatSessionDispl
 		RU         uint      `gorm:"column:rU"`
 		MaxDate    time.Time `gorm:"column:maxDate"`
 		MaxPreview string    `gorm:"column:maxPreview"`
+		IsTop      bool      `gorm:"column:isTop"`
 	}
 	var dataList []Data
 
@@ -57,11 +58,12 @@ func (l *ChatSessionDisplayLogic) ChatSessionDisplay(req *types.ChatSessionDispl
 	// 主查询：使用子查询获取最新消息的预览
 	l.svcCtx.DB.Table("(?) as u", subQuery).
 		Joins("JOIN chat_models cm ON cm.created_at = u.maxDate").
-		Select("u.sU, u.rU, u.maxDate, cm.msg_preview as maxPreview").
-		Order("u.maxDate desc").Limit(int(req.Limit)).Offset(int(offset)).
+		Joins("LEFT JOIN top_user_models tu ON tu.user_id = ? AND (tu.top_user_id = u.sU OR tu.top_user_id = u.rU)", req.UserId).
+		Select("u.sU, u.rU, u.maxDate, cm.msg_preview as maxPreview, CASE WHEN tu.id IS NOT NULL THEN 1 ELSE 0 END as isTop").
+		Order("isTop DESC, u.maxDate desc").Limit(int(req.Limit)).Offset(int(offset)).
 		Scan(&dataList)
-
-	fmt.Println("dataList:", dataList[0])
+	//使用 CASE 语句判断用户是否为置顶用户，并将结果存储在 IsTop 字段中。
+	//在 ORDER BY 子句中，首先按 IsTop 字段降序排序，然后按 u.maxDate 字段降序排序。
 
 	var userList []uint
 	for _, v := range dataList {

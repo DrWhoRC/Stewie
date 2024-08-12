@@ -60,6 +60,14 @@ func (l *ChatHistoryLogic) ChatHistory(req *types.ChatHistoryRequest) (resp *Cha
 	var chatList []chatmodel.ChatModel
 	l.svcCtx.DB.Model(&chatmodel.ChatModel{}).Limit(int(req.Limit)).Offset(int(offset)).Order("created_at DESC").Find(&chatList, "sender_id = ? or receiver_id = ?", req.UserId, req.UserId)
 
+	var deletedChat []uint
+	l.svcCtx.DB.Model(&chatmodel.UserChatDeleteModel{}).
+		Select("chat_id").
+		Where("user_id = ?", req.UserId).
+		Find(&deletedChat)
+
+	chatList = filterDeletedChats(chatList, deletedChat)
+
 	var userIdList []int
 	for _, model := range chatList {
 		userIdList = append(userIdList, int(model.SenderID))
@@ -107,4 +115,19 @@ func (l *ChatHistoryLogic) ChatHistory(req *types.ChatHistoryRequest) (resp *Cha
 		Count: len(list),
 	}
 	return
+}
+
+func filterDeletedChats(chatList []chatmodel.ChatModel, deletedChat []uint) []chatmodel.ChatModel {
+	deletedChatMap := make(map[uint]struct{}, len(deletedChat))
+	for _, id := range deletedChat {
+		deletedChatMap[id] = struct{}{}
+	}
+
+	var filteredList []chatmodel.ChatModel
+	for _, chat := range chatList {
+		if _, found := deletedChatMap[chat.ID]; !found {
+			filteredList = append(filteredList, chat)
+		}
+	}
+	return filteredList
 }

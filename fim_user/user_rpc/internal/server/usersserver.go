@@ -51,3 +51,8 @@ func (s *UsersServer) FriendInfo(ctx context.Context, in *user_grpc.FriendInfoRe
 	l := logic.NewFriendInfoLogic(ctx, s.svcCtx)
 	return l.FriendInfo(in)
 }
+
+func (s *UsersServer) IsFriend(ctx context.Context, in *user_grpc.IsFriendRequest) (*user_grpc.IsFriendResponse, error) {
+	l := logic.NewIsFriendLogic(ctx, s.svcCtx)
+	return l.IsFriend(in)
+}

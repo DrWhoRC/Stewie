@@ -7,10 +7,7 @@ import (
 	usermodel "fim/fim_user/models"
 	"flag"
 	"log"
-	"sync"
 	"time"
-
-	vegeta "github.com/tsenart/vegeta/lib"
 )
 
 type Options struct {
@@ -46,45 +43,47 @@ func main() {
 			&groupmodel.GroupVerifyModel{},
 
 			&chatmodel.ChatModel{},
+			&chatmodel.TopUserModel{},
+			&chatmodel.UserChatDeleteModel{},
 		)
 	}
-	rate := uint64(100) // 设置QPS值
-	duration := 4 * time.Second
+	// rate := uint64(100) // 设置QPS值
+	// duration := 4 * time.Second
 
-	targeter := vegeta.NewStaticTargeter(vegeta.Target{
-		Method: "GET",
-		URL:    "http://127.0.0.1:8888/api/user/search_friend",
-	})
+	// targeter := vegeta.NewStaticTargeter(vegeta.Target{
+	// 	Method: "GET",
+	// 	URL:    "http://127.0.0.1:8888/api/user/search_friend",
+	// })
 
-	attacker := vegeta.NewAttacker()
-	pacer := vegeta.ConstantPacer{Freq: int(rate), Per: time.Second}
-	var wg sync.WaitGroup
+	// attacker := vegeta.NewAttacker()
+	// pacer := vegeta.ConstantPacer{Freq: int(rate), Per: time.Second}
+	// var wg sync.WaitGroup
 
-	// 创建一个切片来存储每个请求的时间戳
-	var timestamps []time.Time
-	var mu sync.Mutex
+	// // 创建一个切片来存储每个请求的时间戳
+	// var timestamps []time.Time
+	// var mu sync.Mutex
 
-	for i := 0; i < 10; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			for res := range attacker.Attack(targeter, pacer, duration, "Test") {
-				log.Println(res)
-				// 记录每个请求的时间戳
-				mu.Lock()
-				timestamps = append(timestamps, time.Now())
-				mu.Unlock()
-			}
-		}()
-	}
+	// for i := 0; i < 10; i++ {
+	// 	wg.Add(1)
+	// 	go func() {
+	// 		defer wg.Done()
+	// 		for res := range attacker.Attack(targeter, pacer, duration, "Test") {
+	// 			log.Println(res)
+	// 			// 记录每个请求的时间戳
+	// 			mu.Lock()
+	// 			timestamps = append(timestamps, time.Now())
+	// 			mu.Unlock()
+	// 		}
+	// 	}()
+	// }
 
-	wg.Wait()
+	// wg.Wait()
 
-	// 计算并输出每秒的请求数
-	qps := calculateQPS(timestamps)
-	logQPS(qps)
-	averageQPS := calculateAverageQPS(qps)
-	log.Printf("平均每秒的请求数: %.2f\n", averageQPS)
+	// // 计算并输出每秒的请求数
+	// qps := calculateQPS(timestamps)
+	// logQPS(qps)
+	// averageQPS := calculateAverageQPS(qps)
+	// log.Printf("平均每秒的请求数: %.2f\n", averageQPS)
 }
 func calculateQPS(timestamps []time.Time) map[string]int {
 	qps := make(map[string]int)

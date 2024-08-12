@@ -55,6 +55,14 @@ message FriendInfoResponse{
     bytes data = 1; //user and userconfig json
 }
 
+message IsFriendRequest{
+    uint32 user_id = 1;
+    uint32 friend_id = 2;
+}
+message IsFriendResponse{
+    bool IsFriend = 1;
+}
+
 
 service Users{
     rpc CreateUser(UserCreateRequest) returns (UserCreateResponse);
@@ -63,6 +71,7 @@ service Users{
     rpc UserConfUpdate(UserConfUpdateRequest)returns (UserInfoResponse);
     rpc UserConf(UserInfoRequest) returns (UserInfoResponse);
     rpc FriendInfo(FriendInfoRequest) returns (FriendInfoResponse);
+    rpc IsFriend(IsFriendRequest) returns (IsFriendResponse);
 }
 
 //goctl rpc protoc user_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

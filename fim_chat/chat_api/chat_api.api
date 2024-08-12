@@ -22,12 +22,35 @@ type ChatSessionDisplayRequest {
 	Key    int  `form:"key"`
 }
 
-type ChatSessionDisplayResponse {
+type ChatSessionDisplay {
 	UserId     uint   `json:"userId"`
 	Avatar     string `json:"avatar"`
 	Nickname   string `json:"nickname"`
 	CreatedAt  string `json:"created_at"`
 	MsgPreview string `json:"msgPreview"`
+}
+
+type ChatSessionDisplayResponse {
+	List  []ChatSessionDisplay `json:"list"`
+	Count int                  `json:"count"`
+}
+
+type ChatPinRequest {
+	UserId   uint `header:"UserId"`
+	FriendId uint `form:"friendId"`
+}
+
+type ChatPinResponse {
+	Data string `json:"data"`
+}
+
+type ChatDeleteRequest {
+	UserId uint `header:"UserId"`
+	ChatId uint `form:"chatId"`
+}
+
+type ChatDeleteResponse {
+	Data string `json:"data"`
 }
 
 service chat {
@@ -36,6 +59,12 @@ service chat {
 
 	@handler ChatSessionDisplay
 	get /api/chat/chat_session_display (ChatSessionDisplayRequest) returns (ChatSessionDisplayResponse)
+
+	@handler ChatPin
+	post /api/chat/chat_pin (ChatPinRequest) returns (ChatPinResponse)
+
+	@handler ChatDelete
+	post /api/chat/chat_delete (ChatDeleteRequest) returns (ChatDeleteResponse)
 }
 
 //goctl api go -api chat_api.api -dir .
