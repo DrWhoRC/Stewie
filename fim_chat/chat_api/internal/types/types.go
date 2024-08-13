@@ -33,6 +33,13 @@ type ChatPinResponse struct {
 	Data string `json:"data"`
 }
 
+type ChatRequest struct {
+	UserId uint `header:"UserId"`
+}
+
+type ChatResponse struct {
+}
+
 type ChatSessionDisplay struct {
 	UserId     uint   `json:"userId"`
 	Avatar     string `json:"avatar"`

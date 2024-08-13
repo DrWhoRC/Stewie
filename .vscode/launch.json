@@ -32,7 +32,7 @@
             "name": "gateway",
             "type": "go",
             "request": "launch",
-            "program": "${workspaceFolder}/fim_gateway/gateway.go"
+            "program": "${workspaceFolder}/fim_gateway/new_gateway.go"
         },
         {
             "name": "chat_api",

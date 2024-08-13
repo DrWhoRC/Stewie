@@ -53,6 +53,12 @@ type ChatDeleteResponse {
 	Data string `json:"data"`
 }
 
+type ChatRequest {
+	UserId uint `header:"UserId"`
+}
+
+type ChatResponse {}
+
 service chat {
 	@handler ChatHistory
 	get /api/chat/chat_history (ChatHistoryRequest) returns (ChatHistoryResponse)
@@ -65,6 +71,9 @@ service chat {
 
 	@handler ChatDelete
 	post /api/chat/chat_delete (ChatDeleteRequest) returns (ChatDeleteResponse)
+
+	@handler ChatHandler
+	get /api/chat/ws/chat (ChatRequest) returns (ChatResponse) //ws对话
 }
 
 //goctl api go -api chat_api.api -dir .
