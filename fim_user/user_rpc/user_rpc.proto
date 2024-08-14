@@ -62,6 +62,19 @@ message IsFriendRequest{
 message IsFriendResponse{
     bool IsFriend = 1;
 }
+message FriendListRequest{
+    uint32 user_id = 1;
+}
+
+message FriendInfo{
+    uint32 user_id = 1;
+    string nickname = 2;
+    string avatar = 3;
+    bool friendOnlineNotify = 4;
+}
+message FriendListResponse{
+    repeated FriendInfo friendList = 1;
+}
 
 
 service Users{
@@ -72,6 +85,7 @@ service Users{
     rpc UserConf(UserInfoRequest) returns (UserInfoResponse);
     rpc FriendInfo(FriendInfoRequest) returns (FriendInfoResponse);
     rpc IsFriend(IsFriendRequest) returns (IsFriendResponse);
+    rpc GetFriendList(FriendListRequest) returns (FriendListResponse);
 }
 
 //goctl rpc protoc user_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

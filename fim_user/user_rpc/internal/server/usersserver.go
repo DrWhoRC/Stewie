@@ -56,3 +56,8 @@ func (s *UsersServer) IsFriend(ctx context.Context, in *user_grpc.IsFriendReques
 	l := logic.NewIsFriendLogic(ctx, s.svcCtx)
 	return l.IsFriend(in)
 }
+
+func (s *UsersServer) GetFriendList(ctx context.Context, in *user_grpc.FriendListRequest) (*user_grpc.FriendListResponse, error) {
+	l := logic.NewGetFriendListLogic(ctx, s.svcCtx)
+	return l.GetFriendList(in)
+}
