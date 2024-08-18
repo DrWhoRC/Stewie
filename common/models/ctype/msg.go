@@ -6,6 +6,20 @@ import (
 	"time"
 )
 
+type MsgType int8
+
+const (
+	ImageMsgType MsgType = iota + 1
+	VideoMsgType
+	FileMsgType
+	VoiceMsgType
+	VoiceCallMsgType
+	VideoCallMsgType
+	WithdrawMsgType
+	QuoteMsgType
+	AtMsgType
+)
+
 type Msg struct {
 	Type         int8          `json:"type"`    //消息类型: 0-文本; 1-图片; 2-文件; 3-音频; 4-视频; 6-语音通话; 7-视频通话; 8-撤回消息; 9-引用消息; 10-@
 	Content      *string       `json:"content"` //only used when MsgType=0

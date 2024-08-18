@@ -7,10 +7,23 @@ Log:
   Encoding: plain
   TimeFormat: "2006-01-02 15:04:05"
   Stat: false
+UserRpc:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: userrpc.rpc
+ChatRpc:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: chatrpc.rpc
 WhiteList:
   - png
   - jpg
   - jpeg
   - gif
   - webp
+BlackList:
+  - exe
+  - php
 UploadDir: uploads

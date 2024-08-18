@@ -87,6 +87,13 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 
 	}
 
+	_, err = l.svcCtx.UserRpc.UserConfUpdate(context.Background(), &users.UserConfUpdateRequest{
+		Online: true,
+	})
+	if err != nil {
+		logx.Error(err)
+		return
+	}
 	return &types.LoginResponse{
 		Code: 1,
 		Data: types.LoginInfo{Token: token},

@@ -8,6 +8,7 @@ import (
 
 	"fim/fim_auth/auth_api/internal/svc"
 	"fim/fim_auth/auth_api/internal/types"
+	"fim/fim_user/user_rpc/users"
 	"fim/utils/jwts"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -47,6 +48,10 @@ func (l *LogoutLogic) Logout(token string) (resp *types.Response, err error) {
 
 	//set if not exist, 设置键值对，值为空，到了过期时间就会自动删除
 	l.svcCtx.Redis.SetNX(userid_str, "", expiration)
+
+	l.svcCtx.UserRpc.UserConfUpdate(context.Background(), &users.UserConfUpdateRequest{
+		Online: false,
+	})
 
 	return &types.Response{
 		Code: 0,

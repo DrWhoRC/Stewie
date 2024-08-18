@@ -11,12 +11,23 @@ type ImageShowRequest {
 	ImageName string `path:"imageName"`
 }
 
+type FileRequest {
+	UserId uint `header:"UserId"`
+}
+
+type FileResponse {
+	Src string `json:"src"`
+}
+
 service file {
 	@handler ImageUpload
 	post /api/file/image_upload (ImageUploadRequest) returns (ImageUploadResponse)
 
 	@handler ImageShow
 	get /api/file/image_show/:imageType/:imageName (ImageShowRequest)
+
+	@handler File
+	post /api/file/file (FileRequest) returns (FileResponse)
 }
 
 //goctl api go -api file_api.api -dir .

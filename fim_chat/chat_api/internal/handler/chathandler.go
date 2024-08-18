@@ -8,8 +8,10 @@ import (
 	"sync"
 	"time"
 
+	"fim/common/models/ctype"
 	"fim/fim_chat/chat_api/internal/svc"
 	"fim/fim_chat/chat_api/internal/types"
+	"fim/fim_chat/chat_rpc/types/chat_rpc"
 	usermodel "fim/fim_user/models"
 	"fim/fim_user/user_rpc/types/user_grpc"
 
@@ -102,43 +104,116 @@ func ChatHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		//friend online notice
-		go func() {
-			for conn != nil {
-				mu1.Lock()
-				for _, friend := range resFriendList.FriendList {
-					time.Sleep(time.Second * 1)
-					if friend.FriendOnlineNotify {
-						mu2.Lock()
-						if UserWsInfoMap[uint(friend.UserId)] == nil {
-							fmt.Println("UserWsInfo:", UserWsInfoMap[uint(friend.UserId)])
-							LastRound[uint(friend.UserId)] = nil
-						}
-						if UserWsInfoMap[uint(friend.UserId)] != nil {
-							if LastRound[uint(friend.UserId)] == nil {
+		// go func() {
+		// 	for conn != nil {
+		// 		mu1.Lock()
+		// 		for _, friend := range resFriendList.FriendList {
+		// 			time.Sleep(time.Second * 1)
+		// 			if friend.FriendOnlineNotify {
+		// 				mu2.Lock()
+		// 				if UserWsInfoMap[uint(friend.UserId)] == nil {
+		// 					fmt.Println("UserWsInfo:", UserWsInfoMap[uint(friend.UserId)])
+		// 					LastRound[uint(friend.UserId)] = nil
+		// 				}
+		// 				if UserWsInfoMap[uint(friend.UserId)] != nil {
+		// 					if LastRound[uint(friend.UserId)] == nil {
 
-								LastRound[uint(friend.UserId)] = userWsInfo
+		// 						LastRound[uint(friend.UserId)] = userWsInfo
 
-								fmt.Println("Lastround", LastRound[uint(friend.UserId)])
-								conn.WriteMessage(websocket.TextMessage,
-									[]byte(fmt.Sprintf("%s just got online", friend.Nickname)))
-							}
-						}
-						mu2.Unlock()
-					}
-				}
-				mu1.Unlock()
-			}
-		}()
+		// 						fmt.Println("Lastround", LastRound[uint(friend.UserId)])
+		// 						conn.WriteMessage(websocket.TextMessage,
+		// 							[]byte(fmt.Sprintf("%s just got online", friend.Nickname)))
+		// 					}
+		// 				}
+		// 				mu2.Unlock()
+		// 			}
+		// 		}
+		// 		mu1.Unlock()
+		// 	}
+		// }()
 
 		for {
-			_, p, err := conn.ReadMessage()
-			if err != nil {
-				logx.Error(err)
-				fmt.Println(err)
+			_, p, err1 := conn.ReadMessage()
+			if err1 != nil {
+				logx.Error(err1)
+				fmt.Println("User read err", err1)
 				break
 			}
-			fmt.Println(string(p))
-			conn.WriteMessage(websocket.TextMessage, []byte("您好，我现在有事不在，一会再和您联系"))
+			var request ChatRequest
+			err2 := json.Unmarshal(p, &request)
+			if err2 != nil {
+				logx.Error(err2)
+				fmt.Println("json unmarshal err2", err2)
+				break
+			}
+
+			isFriendRes, err := svcCtx.UserRpc.IsFriend(context.Background(), &user_grpc.IsFriendRequest{
+				UserId:   uint32(req.UserId),
+				FriendId: uint32(request.ReceiverId),
+			})
+			if err != nil {
+				logx.Error("isFriend-UserRpc err", err)
+				continue
+			}
+			if !isFriendRes.IsFriend {
+				logx.Error(err)
+				conn.WriteMessage(websocket.TextMessage, []byte("You are not friends yet"))
+				break
+			}
+			//write in db
+
+			dbBytedata, _ := json.Marshal(request.Msg)
+			svcCtx.ChatRpc.UserChat(context.Background(), &chat_rpc.UserChatRequest{
+				Sender:   uint32(req.UserId),
+				Receiver: uint32(request.ReceiverId),
+				Msg:      dbBytedata,
+			})
+
+			SendMsg(request.ReceiverId, req.UserId, request.Msg)
 		}
 	}
+}
+
+type ChatRequest struct {
+	ReceiverId uint      `json:"receiverId"`
+	Msg        ctype.Msg `json:"msg"`
+}
+
+type ChatResponse struct {
+	SenderID         uint      `json:"senderId"`
+	SenderNickname   string    `json:"senderNickname"`
+	SenderAvatar     string    `json:"senderAvatar"`
+	ReceiverID       uint      `json:"receiverId"`
+	RecerverNickname string    `json:"receiverNickname"`
+	ReceiverAvatar   string    `json:"receiverAvatar"`
+	CreatedAt        string    `json:"createdAt"`
+	Msg              ctype.Msg `json:"msg"`
+}
+
+func SendMsg(ReceiverId uint, SenderId uint, msg ctype.Msg) {
+	Receiver, ok := UserWsInfoMap[ReceiverId] //check if the receiver is online
+	if !ok {
+		return
+	}
+	Sender, ok := UserWsInfoMap[SenderId]
+	if !ok {
+		return
+	}
+	resp := ChatResponse{
+		SenderID:         SenderId,
+		SenderNickname:   Sender.UserInfo.NickName,
+		SenderAvatar:     Sender.UserInfo.Avatar,
+		ReceiverID:       ReceiverId,
+		RecerverNickname: Receiver.UserInfo.NickName,
+		ReceiverAvatar:   Receiver.UserInfo.Avatar,
+		Msg:              msg,
+		CreatedAt:        time.Now().Format("2006-01-02 15:04:05"),
+	}
+	byteData, err := json.Marshal(resp)
+	if err != nil {
+		logx.Error(err)
+		fmt.Println("json marshal err", err)
+		Receiver.Conn.WriteMessage(websocket.TextMessage, []byte("json marshal err"))
+	}
+	Receiver.Conn.WriteMessage(websocket.TextMessage, byteData)
 }
