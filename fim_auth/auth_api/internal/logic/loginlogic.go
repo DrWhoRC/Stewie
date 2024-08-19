@@ -88,6 +88,7 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	}
 
 	_, err = l.svcCtx.UserRpc.UserConfUpdate(context.Background(), &users.UserConfUpdateRequest{
+		Userid: uint32(user.ID),
 		Online: true,
 	})
 	if err != nil {

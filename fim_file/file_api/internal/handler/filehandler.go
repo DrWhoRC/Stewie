@@ -63,9 +63,6 @@ func FileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			}
 		}
 
-		fileName := fileHeader.Filename
-		filePath := path.Join("uploads", fileName)
-
 		//file suffix whitelist
 		fileNameList := strings.Split(fileHeader.Filename, ".")
 		if len(fileNameList) < 2 {
@@ -93,12 +90,22 @@ func FileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 		user := usermodel.UserModel{}
 		err = json.Unmarshal(res.Data, &user)
-		userFile := fmt.Sprintf("%s_%s", req.UserId, user.NickName)
+
+		fileName := fileHeader.Filename
+		filePath := path.Join("uploads", "common", fileName)
+
+		//file size restriction
+		mSize := float64(fileHeader.Size) / float64(1024*1024)
+		if mSize > svcCtx.Config.FileSize {
+			httpx.Error(w, errors.New("file size larger than 2M"))
+			logx.Errorf("file size larger than 2M")
+			return
+		}
 
 		//file name same check
 		//before store the file, go read the file list, if the file name is same, calculate their md5
 		//if the md5 is same, rename the new one
-		dirPath := path.Join(userFile, svcCtx.Config.UploadDir)
+		dirPath := path.Join(svcCtx.Config.UploadDir, "common")
 		dir, err := os.ReadDir(dirPath)
 		if err != nil {
 			os.MkdirAll(dirPath, 0666)
@@ -117,7 +124,7 @@ func FileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				fileName = fileNameList[0] + fmt.Sprintf("_%d.", randomSuffix) + suffix
 				fmt.Println("file rename: ", fileName)
 
-				fileNewPath := path.Join(svcCtx.Config.UploadDir, fileName)
+				fileNewPath := path.Join(svcCtx.Config.UploadDir, "common", fileName)
 				err := os.WriteFile(fileNewPath, CurrentFileByte, 0666)
 				if err != nil {
 					httpx.ErrorCtx(r.Context(), w, err)
@@ -136,7 +143,7 @@ func FileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 		fmt.Println("file name: ", fileName)
-		filePath = path.Join(svcCtx.Config.UploadDir, fileName)
+		filePath = path.Join(svcCtx.Config.UploadDir, "common", fileName)
 
 		bytedata, err := io.ReadAll(file)
 		if err != nil {
@@ -152,7 +159,9 @@ func FileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := logic.NewFileLogic(r.Context(), svcCtx)
 		resp, err := l.File(&req)
-		resp.Src = "/" + filePath
+		resp = &types.FileResponse{
+			Src: "/" + filePath,
+		}
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
