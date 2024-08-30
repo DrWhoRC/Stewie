@@ -19,7 +19,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/api/file/image_show/:imageType/:imageName",
+				Path:    "/api/file/image_show/:uid",
 				Handler: ImageShowHandler(serverCtx),
 			},
 			{

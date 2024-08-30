@@ -1,14 +1,15 @@
 syntax = "v1"
 
-type ImageUploadRequest {}
+type ImageUploadRequest {
+	UserId uint `header:"UserId"`
+}
 
 type ImageUploadResponse {
 	Url string `json:"url"`
 }
 
 type ImageShowRequest {
-	ImageType string `path:"imageType"`
-	ImageName string `path:"imageName"`
+	uid string `path:"uid"`
 }
 
 type FileRequest {
@@ -24,7 +25,7 @@ service file {
 	post /api/file/image_upload (ImageUploadRequest) returns (ImageUploadResponse)
 
 	@handler ImageShow
-	get /api/file/image_show/:imageType/:imageName (ImageShowRequest)
+	get /api/file/image_show/:uid (ImageShowRequest)
 
 	@handler File
 	post /api/file/file (FileRequest) returns (FileResponse)

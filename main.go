@@ -3,6 +3,7 @@ package main
 import (
 	"fim/core"
 	chatmodel "fim/fim_chat/models"
+	filemodel "fim/fim_file/models"
 	groupmodel "fim/fim_group/models"
 	usermodel "fim/fim_user/models"
 	"flag"
@@ -45,6 +46,8 @@ func main() {
 			&chatmodel.ChatModel{},
 			&chatmodel.TopUserModel{},
 			&chatmodel.UserChatDeleteModel{},
+
+			&filemodel.FileModel{},
 		)
 	}
 	// rate := uint64(100) // 设置QPS值

@@ -13,8 +13,10 @@ import (
 	"fim/fim_file/file_api/internal/logic"
 	"fim/fim_file/file_api/internal/svc"
 	"fim/fim_file/file_api/internal/types"
+	filemodel "fim/fim_file/models"
 	utils "fim/utils/pwd"
 
+	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
@@ -131,9 +133,23 @@ func ImageUploadHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		fileModel := &filemodel.FileModel{
+			Uid:      uuid.New(),
+			UserId:   req.UserId,
+			FileName: fileName,
+			FileSize: fileHeader.Size,
+			FilePath: filePath,
+			Md5:      utils.MD5Encode(string(bytedata)),
+		}
+		err = svcCtx.DB.Create(fileModel).Error
+		if err != nil {
+			httpx.ErrorCtx(r.Context(), w, err)
+			return
+		}
+
 		l := logic.NewImageUploadLogic(r.Context(), svcCtx)
 		resp, err := l.ImageUpload(&req)
-		resp.Url = "/" + filePath
+		resp.Url = "file/api/" + fileModel.Webpath()
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

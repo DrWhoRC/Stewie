@@ -12,6 +12,9 @@ type Config struct {
 	WhiteList []string
 	BlackList []string
 	UploadDir string
-	UserRpc   zrpc.RpcClientConf
-	ChatRpc   zrpc.RpcClientConf
+	Mysql     struct {
+		DataSource string
+	}
+	UserRpc zrpc.RpcClientConf
+	ChatRpc zrpc.RpcClientConf
 }

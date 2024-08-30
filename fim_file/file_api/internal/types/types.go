@@ -10,11 +10,11 @@ type FileResponse struct {
 }
 
 type ImageShowRequest struct {
-	ImageType string `path:"imageType"`
-	ImageName string `path:"imageName"`
+	Uid string `path:"uid"`
 }
 
 type ImageUploadRequest struct {
+	UserId uint `header:"UserId"`
 }
 
 type ImageUploadResponse struct {
