@@ -36,7 +36,6 @@ func (l *Third_party_login_infoLogic) Third_party_login_info() (resp *types.Thir
 			Url:  v.Url,
 		})
 	}
-
 	resp.Code = 1
 	resp.Msg = "Third Party Info "
 	return resp, nil

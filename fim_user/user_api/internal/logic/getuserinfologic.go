@@ -37,7 +37,7 @@ func (l *GetUserInfoLogic) GetUserInfo(req *types.UserInfoRequest) (resp *types.
 		return nil, err
 	}
 	var user usermodel.UserModel
-
+	fmt.Println(string(res.Data))
 	err = json.Unmarshal(res.Data, &user)
 	fmt.Println(string(res.Data))
 	if err != nil {

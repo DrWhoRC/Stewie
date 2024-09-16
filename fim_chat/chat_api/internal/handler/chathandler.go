@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"fim/common/models/ctype"
+	"fim/common/service/redis_service"
 	"fim/fim_chat/chat_api/internal/svc"
 	"fim/fim_chat/chat_api/internal/types"
 	"fim/fim_chat/chat_rpc/types/chat_rpc"
-	usermodel "fim/fim_user/models"
 	"fim/fim_user/user_rpc/types/user_grpc"
 
 	"github.com/gorilla/websocket"
@@ -63,31 +63,29 @@ func ChatHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}()
 
 		//调用户服务获取用户信息
-		res, err := svcCtx.UserRpc.UserInfo(context.Background(), &user_grpc.UserInfoRequest{
-			UserId: uint32(req.UserId),
-		})
+		res, err := redis_service.GetUserBaseInfo(svcCtx.Redis, svcCtx.UserRpc, req.UserId)
 		if err != nil {
 			logx.Error(err)
 			httpx.Error(w, err)
 			return
 		}
-		var user = usermodel.UserModel{}
-		err = json.Unmarshal(res.Data, &user)
+
 		userWsInfo := &UserWsInfo{
 			UserInfo: UserInfo{
-				UserId:   req.UserId,
-				NickName: user.NickName,
-				Avatar:   user.Avatar,
+				UserId:   res.UserId,
+				NickName: res.NickName,
+				Avatar:   res.Avatar,
 			},
 			Conn: conn,
 		}
-		fmt.Println(user.UserConfigModel)
 		UserWsInfoMap[req.UserId] = userWsInfo
+		fmt.Println("UserWsInfoMap:", UserWsInfoMap[req.UserId])
 
 		//check if he's online
 		resFriendList, err := svcCtx.UserRpc.GetFriendList(context.Background(), &user_grpc.FriendListRequest{
 			UserId: uint32(req.UserId),
 		})
+		fmt.Println("resFriendList:", resFriendList)
 		if err != nil {
 			logx.Error("Friend List:", err)
 			httpx.Error(w, err)
@@ -143,6 +141,8 @@ func ChatHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			err2 := json.Unmarshal(p, &request)
 			if err2 != nil {
 				logx.Error(err2)
+				conn.WriteMessage(websocket.TextMessage, p)
+				fmt.Println(p)
 				fmt.Println("json unmarshal err2", err2)
 				break
 			}

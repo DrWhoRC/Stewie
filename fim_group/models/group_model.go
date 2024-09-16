@@ -20,5 +20,5 @@ type GroupModel struct {
 	IsInvite       bool                  `json:"isInvite"`
 	IsTemporary    bool                  `json:"isTemporary"`
 	IsMute         bool                  `json:"isMute"` //全员禁言
-	Size           int                   `json:"size"`   //群规模 20,50,100,200,500,1000,2000,no limit
+	Size           int8                  `json:"size"`   //群规模 20,50,100,200,500,1000,2000,no limit
 }

@@ -1,0 +1,21 @@
+syntax = "v1"
+
+type GroupCreateRequest {
+	UserId     uint   `header:"UserId"` //创建人id
+	Mode       uint8  `json:"mode"` //模式： 1直接创建 2选人创建
+	Name       string `json:"name"` //群名称
+	IsSearch   bool   `json:"isSearch"` //是否允许搜索
+	Size       uint   `json:"size"` //群大小
+	UserIdList []uint `json:"userIdList"` //用户列表
+}
+
+type GroupCreateResponse {
+	GroupId uint `json:"groupId"`
+}
+
+service group {
+	@handler groupCreate
+	post /api/group/group_create (GroupCreateRequest) returns (GroupCreateResponse)
+}
+
+//goctl api go -api group_api.api -dir .

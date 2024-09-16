@@ -10,5 +10,6 @@ func RemoveDuplicateElement[T string | int](arr []T) (ouco []T) {
 	for k, _ := range dupMap {
 		ouco = append(ouco, k)
 	}
+
 	return
 }
