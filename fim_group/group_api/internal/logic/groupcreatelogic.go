@@ -88,6 +88,34 @@ func (l *GroupCreateLogic) GroupCreate(req *types.GroupCreateRequest) (resp *typ
 		return nil, err
 	}
 
+	if req.UserIdList != nil {
+		for _, v := range req.UserIdList {
+			res, err := l.svcCtx.UserRpc.UserInfo(context.Background(), &user_grpc.UserInfoRequest{
+				UserId: uint32(v),
+			})
+			if err != nil {
+				logx.Error(err)
+				return nil, err
+			}
+			var user = usermodel.UserModel{}
+			err = json.Unmarshal(res.Data, &user)
+			var groupMember = groupmodel.GroupMembersModel{
+				GroupID:        group.ID,
+				GroupModel:     group,
+				UserID:         uint(v),
+				UserModel:      user,
+				MemberNickName: user.NickName,
+				Role:           0,
+				IsMute:         false,
+			}
+			err = l.svcCtx.DB.Create(&groupMember).Error
+			if err != nil {
+				logx.Error(err)
+				return nil, err
+			}
+		}
+	}
+
 	return &types.GroupCreateResponse{
 		GroupId: group.ID,
 	}, nil

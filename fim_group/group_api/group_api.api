@@ -13,9 +13,34 @@ type GroupCreateResponse {
 	GroupId uint `json:"groupId"`
 }
 
+type GroupInfoRequest {
+	UserId  uint `header:"UserId"`
+	GroupId uint `json:"groupId"`
+}
+
+type UserInfo {
+	UserId   uint   `json:"userId"`
+	UserName string `json:"userName"`
+	Avatar   string `json:"avatar"`
+}
+
+type GroupInfoResponse {
+	GroupId     uint       `json:"groupId"`
+	Title       string     `json:"title"`
+	Abstract    string     `json:"abstract"`
+	Avatar      string     `json:"avatar"`
+	MemberCount int        `json:"memberCount"`
+	OnlineCount int        `json:"onlineCount"`
+	Creator     UserInfo   `json:"creator"`
+	AdminList   []UserInfo `json:"adminList"`
+}
+
 service group {
 	@handler groupCreate
 	post /api/group/group_create (GroupCreateRequest) returns (GroupCreateResponse)
+
+	@handler groupInfo
+	get /api/group/group_info (GroupInfoRequest) returns (GroupInfoResponse)
 }
 
 //goctl api go -api group_api.api -dir .

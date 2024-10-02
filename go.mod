@@ -5,6 +5,7 @@ go 1.22.1
 require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/pkg/errors v0.9.1
 	github.com/zeromicro/go-zero v1.6.6
 	go.etcd.io/etcd/client/v3 v3.5.14
 	google.golang.org/grpc v1.64.0
@@ -36,7 +37,7 @@ require (
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
+	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

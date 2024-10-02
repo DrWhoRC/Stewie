@@ -1,0 +1,9 @@
+Name: grouprpc.rpc
+ListenOn: 0.0.0.0:8080
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: grouprpc.rpc
+Mysql:
+  Datasource: root:wpywatsendw0517@tcp(127.0.0.1:3306)/fim_v1?charset=utf8&parseTime=True&loc=Local
+

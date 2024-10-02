@@ -16,10 +16,11 @@ type Config struct {
 		Pwd  string
 		DB   int
 	}
-	UserRpc zrpc.RpcClientConf
-	ChatRpc zrpc.RpcClientConf
-	Etcd    string
-	Auth    struct {
+	UserRpc  zrpc.RpcClientConf
+	ChatRpc  zrpc.RpcClientConf
+	GroupRpc zrpc.RpcClientConf
+	Etcd     string
+	Auth     struct {
 		AccessSecret string
 		AccessExpire int
 	}

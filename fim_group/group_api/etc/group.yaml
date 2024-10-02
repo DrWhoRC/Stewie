@@ -22,6 +22,11 @@ ChatRpc:
     Hosts:
     - 127.0.0.1:2379
     Key: chatrpc.rpc
+GroupRpc:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: grouprpc.rpc
 Auth:
   AccessSecret: wpywatsendw0517
   AccessExpire: 3600

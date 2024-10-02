@@ -1,0 +1,18 @@
+syntax = "proto3";
+package group_rpc;
+option go_package = "./group_rpc";
+message MemberInfoRequest{
+    uint32 member = 1;
+    uint32 group = 2;
+}
+message MemberInfoResponse{
+    int32 user_id = 1;
+    string user_name = 2;
+    string avatar = 3;
+    int32 role = 4;
+}
+service group{
+    rpc GroupMemberInfo(MemberInfoRequest) returns (MemberInfoResponse);
+}
+
+//goctl rpc protoc group_rpc.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

@@ -13,3 +13,25 @@ type GroupCreateRequest struct {
 type GroupCreateResponse struct {
 	GroupId uint `json:"groupId"`
 }
+
+type GroupInfoRequest struct {
+	UserId  uint `header:"UserId"`
+	GroupId uint `json:"groupId"`
+}
+
+type GroupInfoResponse struct {
+	GroupId     uint       `json:"groupId"`
+	Title       string     `json:"title"`
+	Abstract    string     `json:"abstract"`
+	Avatar      string     `json:"avatar"`
+	MemberCount int        `json:"memberCount"`
+	OnlineCount int        `json:"onlineCount"`
+	Creator     UserInfo   `json:"creator"`
+	AdminList   []UserInfo `json:"adminList"`
+}
+
+type UserInfo struct {
+	UserId   uint   `json:"userId"`
+	UserName string `json:"userName"`
+	Avatar   string `json:"avatar"`
+}
