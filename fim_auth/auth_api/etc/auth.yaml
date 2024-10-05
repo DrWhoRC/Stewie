@@ -1,6 +1,6 @@
 Name: auth
 Host: 0.0.0.0
-Port: 8888
+Port: 9999
 Mysql:
   Datasource: root:wpywatsendw0517@tcp(127.0.0.1:3306)/fim_v1?charset=utf8&parseTime=True&loc=Local
 Auth:

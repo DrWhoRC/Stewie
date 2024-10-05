@@ -1,0 +1,20 @@
+FROM fimuser-base:v1 AS builder
+# 构建项目
+WORKDIR /app/fim_file/file_api
+RUN go build -o file_api file.go
+
+# 第二阶段：运行阶段
+FROM alpine:latest
+
+# 设置工作目录
+WORKDIR /app
+
+# 从构建阶段复制二进制文件到运行阶段
+COPY --from=builder /app/fim_file/file_api .
+
+# 暴露端口（确保与 Kubernetes 配置中一致）
+EXPOSE 8887
+
+# 启动服务
+CMD ["./file_api"]
+

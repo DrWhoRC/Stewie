@@ -1,0 +1,16 @@
+# 第一阶段：基础构建阶段
+FROM golang:1.22.1-alpine AS fimserver-base
+
+# 设置工作目录
+WORKDIR /app
+
+# 将 go.mod 和 go.sum 复制到工作目录
+COPY go.mod go.sum ./
+
+# 下载依赖
+RUN go mod download
+
+# 将整个项目复制到工作目录
+COPY . .
+
+# 这个基础镜像会包含所有代码和依赖，可以基于此进行后续构建
