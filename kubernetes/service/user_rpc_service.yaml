@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user_rpc_service
+spec:
+  type: NodePort
+  selector:
+    app: fim_user_rpc
+  ports:
+    - protocol: TCP
+      port: 80        # 服务暴露的端口(内部服务端口，可重复)
+      targetPort: 8080  # Pod 内部容器监听的端口
+      nodePort: 30088  # 外部访问的端口 (30000-32767 之间)

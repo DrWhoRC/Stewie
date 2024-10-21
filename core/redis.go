@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -20,6 +21,7 @@ func InitRedis(addr, pwd string, db int) (client *redis.Client) {
 	defer cancel()
 	_, err := rdb.Ping().Result()
 	if err != nil {
+		fmt.Println(err)
 		panic("failed to connect redis")
 	}
 	return rdb

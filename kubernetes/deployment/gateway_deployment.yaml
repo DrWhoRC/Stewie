@@ -1,0 +1,26 @@
+apiVersion: fim/v1
+kind: Deployment
+metadata:
+  name: gateway_deployment
+spec:
+  replicas: 1 //定义运行该服务的副本数量， 1表示只有一个pod在运行该服务
+  selector:
+    matchLabels:
+      app: fim_gateway
+  template:
+    metadata:
+      labels:
+        app: fim_gateway
+    spec:
+      containers:
+      - name: fim_gateway
+        image: fimserver/fim_gateway:v1
+        ports:
+        - containerPort: 8888
+        env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: ETCD_HOST
+          value: "etcd"
+        - name: MYSQL_HOST
+          value: "mysql"
