@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis_deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis_data
+          mountPath: /data           # Redis 数据持久化路径
+  volumes:
+  - name: redis_data
+    persistentVolumeClaim:
+      claimName: redis_pvc           # 绑定到 PVC

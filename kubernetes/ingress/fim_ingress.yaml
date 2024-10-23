@@ -51,8 +51,5 @@ spec:
             name: gateway_service    # 对应 gateway 的 Service 名称
             port:
               number: 80
-
-
-
 //ingress中不需要配置rpc服务, 更不用暴露给外部接口,
 //只需要确保api可以被访问,rpv的service不出错就好了
