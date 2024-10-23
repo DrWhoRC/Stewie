@@ -1,19 +1,19 @@
-apiVersion: fim/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: group_api_deployment
+  name: group-api-deployment
 spec:
-  replicas: 1 //定义运行该服务的副本数量， 1表示只有一个pod在运行该服务
+  replicas: 1 
   selector:
     matchLabels:
-      app: fim_group_api
+      app: fim-group-api
   template:
     metadata:
       labels:
-        app: fim_group_api
+        app: fim-group-api
     spec:
       containers:
-      - name: fim_group_api
+      - name: fim-group-api
         image: fimserver/group_api:v1
         ports:
         - containerPort: 8999

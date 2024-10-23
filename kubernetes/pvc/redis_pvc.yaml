@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redis_pvc
+  name: redis-pvc
 spec:
   accessModes:
     - ReadWriteOnce   # 仅一个节点能挂载，且为读写

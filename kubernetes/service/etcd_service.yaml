@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd-service
+spec:
+  type: ClusterIP
+  selector:
+    app: etcd
+  ports:
+    - name: client-port
+      protocol: TCP
+      port: 2379        # 客户端访问端口
+      targetPort: 2379  # Pod 内部 etcd 容器的端口
+    - name: peer-port
+      protocol: TCP
+      port: 2380        # 节点间通信端口
+      targetPort: 2380

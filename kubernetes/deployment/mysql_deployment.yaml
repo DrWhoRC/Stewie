@@ -1,9 +1,9 @@
-apiVersion: fim/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_deployment
+  name: mysql-deployment
 spec:
-  replicas: 1 //定义运行该服务的副本数量， 1表示只有一个pod在运行该服务
+  replicas: 1
   selector:
     matchLabels:
       app: mysql
@@ -21,10 +21,10 @@ spec:
         ports:
         - containerPort: 3306
         volumeMounts:
-        - name: mysql_data
-          mountPath: /var/lib/mysql
-  volumes:
-  - name: mysql_data
-    persistentVolumeClaim:
-      claimName: mysql_pvc
+        - name: mysql-data
+          mountPath: /var/lib/mysql   # 挂载到 MySQL 数据目录
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: mysql-pvc        # PVC 的名称
 

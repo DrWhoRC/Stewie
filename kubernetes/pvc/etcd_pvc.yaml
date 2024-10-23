@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: etcd_pvc
+  name: etcd-pvc
 spec:
   accessModes:
     - ReadWriteOnce   # 只能由一个节点以读写模式挂载

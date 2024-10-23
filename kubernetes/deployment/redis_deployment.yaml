@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis_deployment
+  name: redis-deployment
 spec:
   replicas: 1
   selector:
@@ -18,9 +18,9 @@ spec:
         ports:
         - containerPort: 6379
         volumeMounts:
-        - name: redis_data
+        - name: redis-data
           mountPath: /data           # Redis 数据持久化路径
-  volumes:
-  - name: redis_data
-    persistentVolumeClaim:
-      claimName: redis_pvc           # 绑定到 PVC
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-pvc           # 绑定到 PVC

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: etcd_deployment
+  name: etcd-deployment
 spec:
   replicas: 1
   selector:
@@ -25,9 +25,9 @@ spec:
         - containerPort: 2379              # 客户端访问端口
         - containerPort: 2380              # 节点间通信端口
         volumeMounts:
-        - name: etcd_data
-          mountPath: /etcd_data            # 挂载到 Etcd 的数据存储目录
-  volumes:
-  - name: etcd_data
-    persistentVolumeClaim:
-      claimName: etcd_pvc                  # 挂载到 PVC
+        - name: etcd-data
+          mountPath: /etcd-data            # 挂载到 Etcd 的数据存储目录
+      volumes:
+      - name: etcd-data
+        persistentVolumeClaim:
+          claimName: etcd-pvc                  # 挂载到 PVC

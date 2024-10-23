@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: fim_ingress
+  name: fim-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
@@ -13,43 +13,43 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: group_api_service    # 对应 groupapi 的 Service 名称
+            name: group-api-service    # 对应 groupapi 的 Service 名称
             port:
               number: 80             # Service 暴露的端口
       - path: /api/auth
         pathType: Prefix
         backend:
           service:
-            name: auth_api_service    # 对应 authapi 的 Service 名称
+            name: auth-api-service    # 对应 authapi 的 Service 名称
             port:
               number: 80             # Service 暴露的端口
       - path: /api/user
         pathType: Prefix
         backend:
           service:
-            name: user_api_service    # 对应 userapi 的 Service 名称
+            name: user-api-service    # 对应 userapi 的 Service 名称
             port:
               number: 80             # Service 暴露的端口
       - path: /api/file
         pathType: Prefix
         backend:
           service:
-            name: file_api_service    # 对应 fileapi 的 Service 名称
+            name: file-api-service    # 对应 fileapi 的 Service 名称
             port:
               number: 80
       - path: /api/chat
         pathType: Prefix
         backend:
           service:
-            name: chat_api_service    # 对应 chatapi 的 Service 名称
+            name: chat-api-service    # 对应 chatapi 的 Service 名称
             port:
               number: 80
       - path: /gateway
         pathType: Prefix
         backend:
           service:
-            name: gateway_service    # 对应 gateway 的 Service 名称
+            name: gateway-service    # 对应 gateway 的 Service 名称
             port:
               number: 80
-//ingress中不需要配置rpc服务, 更不用暴露给外部接口,
-//只需要确保api可以被访问,rpv的service不出错就好了
+#ingress中不需要配置rpc服务, 更不用暴露给外部接口,
+#只需要确保api可以被访问,rpv的service不出错就好了
